@@ -1,35 +1,64 @@
 import { db } from "@/db";
+import { randomInt } from "crypto";
 
-const updateOrCreateUser = async (email, username, image) => {
-  const existingUser = await db.user.findUnique({
-    where: {
-      email: email[0].email_address,
-    },
-  });
+type emailType = {
+  email_address: string;
+};
 
-  if (existingUser) {
-    await db.user.update({
+export const updateOrCreateUser = async (
+  ClerkId: string | undefined,
+  email: emailType[],
+  username: string | null,
+  image: string
+) => {
+  if (username == null) {
+    username = "man";
+  }
+  if (ClerkId == null) {
+    ClerkId = String(randomInt(0, 12232));
+  }
+
+  try {
+    const existingUser = await db.user.findUnique({
       where: {
-        email: email[0].email_address,
-      },
-      data: {
-        email: email[0].email_address,
-
-        image: image,
+        ClerkId,
       },
     });
-  } else {
-    await db.user.create({
-      data: {
-        username: username,
-        email: email[0].email_address,
 
-        image: image,
-      },
-    });
+    if (existingUser) {
+      await db.user.update({
+        where: {
+          ClerkId,
+        },
+        data: {
+          email: email[0].email_address,
+          username,
+          image,
+        },
+      });
+    } else {
+      await db.user.create({
+        data: {
+          ClerkId,
+          username,
+          email: email[0].email_address,
+          image,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Error updating/creating user:", error);
+    // Handle the error appropriately, such as logging or throwing
+    throw error;
   }
 };
 
-export const deleteUser = async (email) => {
-  await db.user.delete({ where: { email: email[0].email_address } });
+export const deleteUser = async (ClerkId: string | undefined) => {
+  try {
+    await db.user.delete({ where: { ClerkId } });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    // Handle the error appropriately, such as logging or throwing
+    throw error;
+  }
 };
