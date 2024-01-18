@@ -8,6 +8,7 @@ import RightSideBar from "@/components/layout/RightSideBar";
 import { Suspense } from "react";
 
 import { LeftSideBarSkeleton } from "@/components/ui/skeletons";
+import BottomBar from "@/components/layout/BottomBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,13 +26,14 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <main className=" flex flex-row justify-center  bg-dark ">
+          <main className=" flex flex-row justify-center h-full bg-dark ">
             <Suspense fallback={<LeftSideBarSkeleton />}>
               <LeftSideBar />
             </Suspense>
             <MainContent>{children}</MainContent>
             <RightSideBar />
           </main>
+          <BottomBar />
         </body>
       </html>
     </ClerkProvider>

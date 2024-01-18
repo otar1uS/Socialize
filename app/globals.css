@@ -6,8 +6,6 @@ html,
 body,
 :root {
   color: white;
-
-  height: 100%;
 }
 
 @layer base {
@@ -81,4 +79,13 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.msg-open-transition {
+  transition: 1s ease-in;
+  height: 300px;
+}
+.msg-close-transition {
+  transition: 1s ease-in;
+  height: 0px;
 }

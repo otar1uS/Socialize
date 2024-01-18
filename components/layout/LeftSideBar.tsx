@@ -12,12 +12,12 @@ const LeftSideBar = () => {
   return (
     <div
       className="h-screen top-0 bg-dark 
-     left-0 sticky  flex flex-col gap-6 px-4 py-6 max-md:hidden    text-xl font-medium"
+     left-0 sticky  flex flex-col gap-6 px-4 py-6 max-xl:hidden text-[16px]    xl:text-xl font-medium"
     >
       <Link href="/">
-        <Image src="/logo.png" alt="Socialize" width={200} height={200} />
+        <Image src="/logo.png" alt="Socialize" width={150} height={150} />
       </Link>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1 xl:gap-3">
         <div className="flex flex-col justify-center gap-3 items-center text-white">
           <Link href="/">
             <Avatar>
