@@ -7,6 +7,8 @@ import SidebarNavigation from "../NavLinks/SidebarNavigation";
 import { UserButton } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
 import { Logout } from "@mui/icons-material";
+import { updateOrCreateUser } from "@/lib/actions/user";
+import { useEffect } from "react";
 
 const LeftSideBar = () => {
   return (

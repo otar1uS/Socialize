@@ -1,22 +1,24 @@
 import { db } from "@/db";
 import { randomInt } from "crypto";
 
-type emailType = {
+type EmailType = {
   email_address: string;
 };
 
 export const updateOrCreateUser = async (
   ClerkId: string | undefined,
-  email: emailType[],
+  email: EmailType[],
   username: string | null,
   image: string
-) => {
+): Promise<void> => {
   if (username == null) {
     username = "man";
   }
   if (ClerkId == null) {
     ClerkId = String(randomInt(0, 12232));
   }
+
+  console.log("----------------------------------- it has been used ");
 
   try {
     const existingUser = await db.user.findUnique({
@@ -26,9 +28,10 @@ export const updateOrCreateUser = async (
     });
 
     if (existingUser) {
+      console.log("----------------------------------- it has been used ");
       await db.user.update({
         where: {
-          ClerkId,
+          ClerkId: ClerkId!,
         },
         data: {
           email: email[0].email_address,
@@ -39,7 +42,7 @@ export const updateOrCreateUser = async (
     } else {
       await db.user.create({
         data: {
-          ClerkId,
+          ClerkId: ClerkId!,
           username,
           email: email[0].email_address,
           image,
@@ -53,9 +56,15 @@ export const updateOrCreateUser = async (
   }
 };
 
-export const deleteUser = async (ClerkId: string | undefined) => {
+export const deleteUser = async (
+  ClerkId: string | undefined
+): Promise<void> => {
   try {
-    await db.user.delete({ where: { ClerkId } });
+    if (ClerkId) {
+      await db.user.delete({ where: { ClerkId } });
+    } else {
+      console.warn("ClerkId is undefined. Cannot delete user.");
+    }
   } catch (error) {
     console.error("Error deleting user:", error);
     // Handle the error appropriately, such as logging or throwing
