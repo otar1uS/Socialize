@@ -58,6 +58,9 @@ export async function POST(req: Request) {
 
     try {
       await updateOrCreateUser(id, email_addresses, username, image_url);
+
+      console.log("its been used");
+
       return new Response("user is created or updated", {
         status: 200,
       });
