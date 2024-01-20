@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { deleteUser, updateOrCreateUser } from "@/lib/actions/user";
 
+require("dotenv").config({ path: ".env" });
+
 console.log("hello ");
 
 export async function POST(req: Request) {
