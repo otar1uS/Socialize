@@ -1,64 +1,101 @@
-import { deleteUser, updateOrCreateUser } from "@/lib/actions/user";
-import { IncomingHttpHeaders } from "http";
+import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
-import { Webhook, WebhookRequiredHeaders } from "svix";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { createOrUpdateUser, deleteUser } from "@/lib/actions/user";
 
-const webhookSecret = process.env.WEBHOOK_SECRET || "";
+export async function POST(req: Request) {
+  // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
+  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
-async function handler(request: Request) {
-  const payload = await request.json();
-  const headersList = headers();
-  const heads = {
-    "svix-id": headersList.get("svix-id"),
-    "svix-timestamp": headersList.get("svix-timestamp"),
-    "svix-signature": headersList.get("svix-signature"),
-  };
-  const wh = new Webhook(webhookSecret);
+  if (!WEBHOOK_SECRET) {
+    throw new Error(
+      "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
+    );
+  }
+
+  // Get the headers
+  const headerPayload = headers();
+  const svix_id = headerPayload.get("svix-id");
+  const svix_timestamp = headerPayload.get("svix-timestamp");
+  const svix_signature = headerPayload.get("svix-signature");
+
+  // If there are no headers, error out
+  if (!svix_id || !svix_timestamp || !svix_signature) {
+    return new Response("Error occured -- no svix headers", {
+      status: 400,
+    });
+  }
+
+  // Get the body
+  const payload = await req.json();
+  const body = JSON.stringify(payload);
+
+  // Create a new Svix instance with your secret.
+  const wh = new Webhook(WEBHOOK_SECRET);
+
   let evt: WebhookEvent;
 
+  // Verify the payload with the headers
   try {
-    evt = wh.verify(
-      JSON.stringify(payload),
-      heads as IncomingHttpHeaders & WebhookRequiredHeaders
-    ) as WebhookEvent;
+    evt = wh.verify(body, {
+      "svix-id": svix_id,
+      "svix-timestamp": svix_timestamp,
+      "svix-signature": svix_signature,
+    }) as WebhookEvent;
   } catch (err) {
-    console.error((err as Error).message);
-    return NextResponse.json({}, { status: 400 });
+    console.error("Error verifying webhook:", err);
+    return new Response("Error occured", {
+      status: 400,
+    });
   }
+
+  // Get the ID and type
+  const { id } = evt.data;
   const eventType = evt.type;
 
   if (eventType === "user.created" || eventType === "user.updated") {
-    const { id, email_addresses, username, image_url } = evt.data;
+    const { id, first_name, last_name, image_url, email_addresses, username } =
+      evt?.data;
 
     try {
-      await updateOrCreateUser(id, email_addresses, username, image_url);
+      await createOrUpdateUser(
+        id,
+        first_name,
+        last_name,
+        image_url,
+        email_addresses,
+        username
+      );
 
-      console.log("its been used");
-
-      return new Response("user is created or updated", {
+      return new Response("User is created or updated", {
         status: 200,
       });
-    } catch (e) {
-      return new Response(`${e} `, {
-        status: 400,
+    } catch (err) {
+      console.error("Error creating or updating user:", err);
+      return new Response("Error occured", {
+        status: 500,
       });
     }
   }
+
   if (eventType === "user.deleted") {
-    const { id } = evt.data;
-
     try {
+      const { id } = evt?.data;
       await deleteUser(id);
-    } catch (e) {
-      return new Response(`${e} `, {
-        status: 400,
+
+      return new Response("User is deleted", {
+        status: 200,
+      });
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      return new Response("Error occured", {
+        status: 500,
       });
     }
   }
-}
 
-export const GET = handler;
-export const POST = handler;
-export const PUT = handler;
+  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
+  console.log("Webhook body:", body);
+
+  return new Response("", { status: 200 });
+}
