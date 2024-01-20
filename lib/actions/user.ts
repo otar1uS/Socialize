@@ -1,14 +1,18 @@
+interface EmailAddress {
+  email_address: string;
+}
+
 import User from "../models/userModel";
 import { connectToDataBase } from "../mongoDB/mongoose";
 
 export const createOrUpdateUser = async (
-  id,
-  first_name,
-  last_name,
-  image_url,
-  email_addresses,
-  username
-) => {
+  id: string,
+  first_name: string,
+  last_name: string,
+  image_url: string,
+  email_addresses: EmailAddress[],
+  username: string | null
+): Promise<typeof User | undefined> => {
   try {
     await connectToDataBase();
 
@@ -23,17 +27,21 @@ export const createOrUpdateUser = async (
           username: username,
         },
       },
-      { upsert: true, new: true } // if user doesn't exist, create a new one
+      { upsert: true, new: true }
     );
 
-    await user.save();
+    if (user) {
+      await user.save();
+    }
+
     return user;
   } catch (error) {
     console.error(error);
+    return undefined;
   }
 };
 
-export const deleteUser = async (id) => {
+export const deleteUser = async (id: string): Promise<void | undefined> => {
   try {
     await connectToDataBase();
     await User.findOneAndDelete({ clerkId: id });
