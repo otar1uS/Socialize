@@ -110,5 +110,6 @@ export async function POST(req: Request) {
     return new Response("", { status: 200 });
   } catch (e) {
     console.log(e);
+    console.log("it was been used ");
   }
 }
