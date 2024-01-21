@@ -9,7 +9,6 @@ import { Suspense } from "react";
 
 import { LeftSideBarSkeleton } from "@/components/ui/skeletons";
 import BottomBar from "@/components/layout/BottomBar";
-import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 

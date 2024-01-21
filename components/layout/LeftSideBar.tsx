@@ -4,11 +4,43 @@ import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import SidebarNavigation from "../NavLinks/SidebarNavigation";
-import { UserButton, RedirectToSignIn } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
 import { CiLogout as LogoutIcon } from "react-icons/ci";
+import { useEffect, useState } from "react";
+import Loader from "../Loader";
+import { ClerkUser } from "@/TS/ActionTypes";
+import { LeftSideBarSkeleton } from "../ui/skeletons";
 const LeftSideBar = () => {
-  return (
+  const { user, isLoaded } = useUser() as {
+    user: ClerkUser;
+    isLoaded: boolean;
+  };
+
+  const [loading, setLoading] = useState(true);
+
+  const [userData, setUserData] = useState({});
+
+  const getUserData = async () => {
+    const response = await fetch(`/api/user/${user?.id}`);
+    const data = await response.json();
+    setUserData(data);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, [user]);
+
+  const userStats = [
+    { number: user?.posts?.length, name: "Posts" },
+    { number: user?.followers?.length, name: "Followers" },
+    { number: user?.following?.length, name: "Following" },
+  ];
+
+  loading || isLoaded ? (
+    <LeftSideBarSkeleton />
+  ) : (
     <div
       className="h-screen top-0 bg-dark 
      left-0 sticky  flex flex-col gap-6 px-4 py-6 max-xl:hidden text-[16px]    xl:text-xl font-medium"
@@ -20,30 +52,24 @@ const LeftSideBar = () => {
         <div className="flex flex-col justify-center gap-3 items-center text-white">
           <Link href="/">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={user?.profileImageUrl} />
 
-              <AvatarFallback>PI</AvatarFallback>
+              <AvatarFallback>{user?.username?.slice(0, 2)}</AvatarFallback>
             </Avatar>
           </Link>
-          <p>Otari Pkhovelisvhili</p>
+          <p>
+            {user?.firstName} {user?.lastName}
+          </p>
         </div>
         <div className="flex flex-row gap-2 items-center text-white">
-          {"1 2 3".split(" ").map((i) => {
+          {userStats.map((i) => {
             return (
               <div
-                key={i}
+                key={i.name}
                 className="flex flex-col flex-grow items-center justify-center gap-1"
               >
-                <p>0</p>
-                <p>
-                  {i == "1"
-                    ? "Posts"
-                    : i == "2"
-                    ? "Followers"
-                    : i == "3"
-                    ? "Following"
-                    : null}
-                </p>
+                <p>{i.number}</p>
+                <p>{i.name}</p>
               </div>
             );
           })}
