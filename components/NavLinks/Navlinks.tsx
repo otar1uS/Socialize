@@ -1,34 +1,34 @@
+import { CiHome as HomeIcon } from "react-icons/ci";
 import {
-  Home,
-  GroupOutlined,
-  BookmarksOutlined,
-  FavoriteBorder,
-  AddToPhotosOutlined,
-} from "@mui/icons-material";
+  MdAddPhotoAlternate as AddPhotoIcon,
+  MdGroups as GroupsIcon,
+} from "react-icons/md";
+import { IoBookmarksOutline as BookmarkIcon } from "react-icons/io5";
+import { MdFavoriteBorder as FavoriteIcon } from "react-icons/md";
 
 const sidebarLinks = [
   {
-    icon: <Home sx={{ color: "white", fontSize: "24px" }} />,
+    icon: <HomeIcon size={24} />,
     route: "/",
     label: "Home",
   },
   {
-    icon: <AddToPhotosOutlined sx={{ color: "white", fontSize: "24px" }} />,
+    icon: <AddPhotoIcon scale={24} />,
     route: "/create-post",
     label: "Create Post",
   },
   {
-    icon: <GroupOutlined sx={{ color: "white", fontSize: "24px" }} />,
+    icon: <GroupsIcon size={24} />,
     route: "/people",
     label: "People",
   },
   {
-    icon: <BookmarksOutlined sx={{ color: "white", fontSize: "24px" }} />,
+    icon: <BookmarkIcon size={24} />,
     route: "/saved-posts",
     label: "Saved Posts",
   },
   {
-    icon: <FavoriteBorder sx={{ color: "white", fontSize: "24px" }} />,
+    icon: <FavoriteIcon size={24} />,
     route: "/liked-posts",
     label: "Liked Posts",
   },

@@ -6,8 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import SidebarNavigation from "../NavLinks/SidebarNavigation";
 import { UserButton } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
-import { Logout } from "@mui/icons-material";
-
+import { CiLogout as LogoutIcon } from "react-icons/ci";
 const LeftSideBar = () => {
   return (
     <div
@@ -54,13 +53,13 @@ const LeftSideBar = () => {
       <SidebarNavigation />
       <hr />
       <div className="flex gap-2 items-center">
-        <UserButton />
+        <UserButton afterSignOutUrl="/sign-in" />
         <p>Manage Account</p>
       </div>
       <SignedIn>
         <SignOutButton>
           <div className="flex w-full cursor-pointer gap-2 items-center justify-start">
-            <Logout sx={{ color: "white", fontSize: "32px" }} />
+            <LogoutIcon size={32} />
             <p>Log Out</p>
           </div>
         </SignOutButton>

@@ -1,6 +1,7 @@
 import { SearchBar } from "../ui2/SearchBar";
 import { SignOutButton, SignedIn, UserButton } from "@clerk/nextjs";
-import { Logout } from "@mui/icons-material";
+import { CiLogout as LogoutIcon } from "react-icons/ci";
+
 import { Button } from "../ui/button";
 import Link from "next/link";
 
@@ -19,7 +20,7 @@ const MainContent = ({ children }: { children: React.ReactNode }) => {
           <SignedIn>
             <SignOutButton>
               <div className="flex w-full cursor-pointer gap-2 items-center justify-start">
-                <Logout sx={{ color: "white", fontSize: "32px" }} />
+                <LogoutIcon size={32} />
               </div>
             </SignOutButton>
           </SignedIn>
