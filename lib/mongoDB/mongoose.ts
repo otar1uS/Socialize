@@ -14,8 +14,7 @@ export const connectToDataBase = async () => {
 
   try {
     await mongoose.connect(mongoDB, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      dbName: "socialize",
     } as ConnectOptions);
 
     isConnected = true;
