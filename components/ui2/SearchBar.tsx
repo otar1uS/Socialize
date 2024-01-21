@@ -1,4 +1,4 @@
-import { Search } from "@mui/icons-material";
+import { IoIosSearch as SearchIcon } from "react-icons/io";
 import React from "react";
 
 export const SearchBar = () => {
@@ -12,7 +12,7 @@ export const SearchBar = () => {
         aria-describedby="button-addon2"
       />
 
-      <Search sx={{ color: "white", fontSize: "30px", cursor: "pointer" }} />
+      <SearchIcon size={30} />
     </div>
   );
 };
