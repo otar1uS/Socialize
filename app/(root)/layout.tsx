@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, useUser } from "@clerk/nextjs";
 import LeftSideBar from "@/components/layout/LeftSideBar";
 import MainContent from "@/components/layout/MainContent";
 import RightSideBar from "@/components/layout/RightSideBar";
@@ -9,6 +9,7 @@ import { Suspense } from "react";
 
 import { LeftSideBarSkeleton } from "@/components/ui/skeletons";
 import BottomBar from "@/components/layout/BottomBar";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -15,11 +15,16 @@ import {
   AvatarImage,
 } from "../../components/ui/avatar";
 
-import { useUser } from "@clerk/nextjs";
+import { RedirectToSignIn, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
 export default function Home() {
   const { user } = useUser();
+
+  if (!user) {
+    return <RedirectToSignIn />;
+  }
+
   return (
     <div className="h-screen">
       <Card>
@@ -37,7 +42,7 @@ export default function Home() {
         </CardHeader>
         <CardContent>
           <Image
-            src="/photo1.jpg"
+            src="/photo.avif"
             alt="beautiful picture"
             width={500}
             height={500}

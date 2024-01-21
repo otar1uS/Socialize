@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import SidebarNavigation from "../NavLinks/SidebarNavigation";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, RedirectToSignIn } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
 import { CiLogout as LogoutIcon } from "react-icons/ci";
 const LeftSideBar = () => {
@@ -53,7 +53,7 @@ const LeftSideBar = () => {
       <SidebarNavigation />
       <hr />
       <div className="flex gap-2 items-center">
-        <UserButton afterSignOutUrl="/sign-in" />
+        <UserButton />
         <p>Manage Account</p>
       </div>
       <SignedIn>

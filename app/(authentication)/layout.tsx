@@ -11,10 +11,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 const authenticationLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ClerkProvider>
+    <ClerkProvider afterSignInUrl="/" afterSignUpUrl="/sign-up">
       <html lang="en">
         <body
-          className={`${inter.className}  h-full flex items-center justify-center`}
+          className={`${inter.className}  bg-black h-full flex items-center justify-center`}
         >
           {children}
         </body>

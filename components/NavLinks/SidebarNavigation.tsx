@@ -12,21 +12,21 @@ const SidebarNavigation = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      {sidebarLinks.map((link) => {
-        return (
-          <Link href={link.route} key={link.label}>
-            <div
-              className={clsx(
-                { "bg-cyan-300 rounded-full ": pathname === link.route },
-                "flex gap-1 items-center justify-start p-1  text-yellow "
-              )}
-            >
-              {link.icon}
-              <span className="ml-2">{link.label}</span>
-            </div>
-          </Link>
-        );
-      })}
+      {sidebarLinks.map((link) => (
+        <Link href={link.route} key={link.label}>
+          <div
+            className={clsx(
+              "flex gap-1 items-center justify-start p-1 text-yellow",
+              {
+                "bg-cyan rounded-md py-2 px-2": pathname === link.route,
+              }
+            )}
+          >
+            {link.icon}
+            <span className="ml-2">{link.label}</span>
+          </div>
+        </Link>
+      ))}
     </div>
   );
 };
