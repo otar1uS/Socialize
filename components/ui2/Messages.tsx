@@ -2,9 +2,10 @@
 import { useState } from "react";
 
 import {
-  KeyboardDoubleArrowDown,
-  KeyboardDoubleArrowUp,
-} from "@mui/icons-material";
+  MdOutlineKeyboardDoubleArrowDown as ArrowDownIcon,
+  MdOutlineKeyboardDoubleArrowUp as ArrowUpIcon,
+} from "react-icons/md";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export const Messages = () => {
@@ -17,11 +18,7 @@ export const Messages = () => {
         className="flex justify-between items-center px-3 py-1 cursor-pointer"
       >
         <h1 className="text-xl font-bold">Messages</h1>
-        {open ? (
-          <KeyboardDoubleArrowDown sx={{ fontSize: "30px" }} />
-        ) : (
-          <KeyboardDoubleArrowUp sx={{ fontSize: "30px" }} />
-        )}
+        {open ? <ArrowDownIcon size={30} /> : <ArrowUpIcon size={30} />}
       </div>
 
       <div
