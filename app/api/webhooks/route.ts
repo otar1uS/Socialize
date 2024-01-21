@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
-  console.log("run");
+  console.log("ssas");
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
       });
     } catch (err) {
       console.error("Error creating or updating user:", err);
-      return new Response("Error occured", {
+      return new Response("Error occurred", {
         status: 500,
       });
     }
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
       });
     } catch (err) {
       console.error("Error deleting user:", err);
-      return new Response("Error occured", {
+      return new Response("Error occurred", {
         status: 500,
       });
     }
