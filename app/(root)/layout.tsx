@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { ClerkProvider, useUser } from "@clerk/nextjs";
 import LeftSideBar from "@/components/layout/LeftSideBar";
 import MainContent from "@/components/layout/MainContent";
 import RightSideBar from "@/components/layout/RightSideBar";
 import { Suspense } from "react";
-
-import { LeftSideBarSkeleton } from "@/components/ui/skeletons";
+import { LeftSideBarSkeleton } from "@/components/shadcn-ui/skeletons";
 import BottomBar from "@/components/layout/BottomBar";
+import Wrapper from "@/components/layout/Wrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <Wrapper>
       <html lang="en">
         <body className={inter.className}>
           <main className=" flex flex-row justify-center h-full bg-dark ">
@@ -36,6 +35,6 @@ export default function RootLayout({
           <BottomBar />
         </body>
       </html>
-    </ClerkProvider>
+    </Wrapper>
   );
 }

@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const authenticationLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ClerkProvider afterSignInUrl="/" afterSignUpUrl="/sign-up">
+    <ClerkProvider afterSignInUrl="/" afterSignUpUrl="/">
       <html lang="en">
         <body
           className={`${inter.className}  bg-black h-full flex items-center justify-center`}

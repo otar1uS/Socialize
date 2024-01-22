@@ -1,11 +1,11 @@
 "use client";
 
 import { ReactNode } from "react";
-import { SearchBar } from "../ui2/SearchBar";
+import { SearchBar } from "../ui/SearchBar";
 import { SignOutButton, SignedIn, UserButton } from "@clerk/nextjs";
 import { CiLogout as LogoutIcon } from "react-icons/ci";
 
-import { Button } from "../ui/button";
+import { Button } from "../shadcn-ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { pageTitles } from "../NavLinks/Navlinks";

@@ -12,11 +12,12 @@ export const GET = async (req: Request, { params }: Params) => {
     await connectToDataBase();
 
     const user = await User.findOne({ clerkId: id })
-      .populate("posts savedPosts following followers likedPosts")
+      .populate("following")
+      .populate("followers")
       .exec();
 
     return new Response(JSON.stringify(user), { status: 200 });
   } catch (e) {
-    return new Response("Failed to get user", { status: 500 });
+    return new Response(`${e}  Failed to get user`, { status: 500 });
   }
 };

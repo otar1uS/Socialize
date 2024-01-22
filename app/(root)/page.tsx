@@ -1,57 +1,34 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Cards } from "@/components/layout/Cards";
+import React, { useEffect, useState } from "react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../components/ui/avatar";
+const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState([]);
 
-import { RedirectToSignIn, useUser } from "@clerk/nextjs";
-import Image from "next/image";
+  useEffect(() => {
+    async function fetchingData() {
+      try {
+        const responsePosts = await fetch("/api/posts");
+        const responseUsers = await fetch("/api/users");
+        const postsData = await responsePosts.json();
+        const usersData = await responseUsers.json();
 
-export default function Home() {
-  const { user } = useUser();
-
-  if (!user) {
-    return <RedirectToSignIn />;
-  }
+        setPosts(postsData);
+        setUsers(usersData);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchingData();
+  }, []);
 
   return (
     <div className="h-screen">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <div className="flex gap-2 items-center">
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>{user?.username?.slice(0, 2)}</AvatarFallback>
-              </Avatar>
-              Otari Pkhovelishvili
-            </div>
-          </CardTitle>
-          <CardDescription>What a beautiful day</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Image
-            src="/photo.avif"
-            alt="beautiful picture"
-            width={500}
-            height={500}
-          />
-        </CardContent>
-        <CardFooter>
-          <p>$car</p>
-        </CardFooter>
-      </Card>
+      <Cards postsData={posts} usersData={users} />
     </div>
   );
-}
+};
+
+export default Home;

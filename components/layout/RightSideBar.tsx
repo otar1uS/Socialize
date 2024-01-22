@@ -1,4 +1,4 @@
-import { Messages } from "../ui2/Messages";
+import { Messages } from "../ui/Messages";
 
 const RightSideBar = () => {
   return (

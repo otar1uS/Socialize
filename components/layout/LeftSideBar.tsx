@@ -2,45 +2,43 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/shadcn-ui/avatar";
 import SidebarNavigation from "../NavLinks/SidebarNavigation";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
 import { CiLogout as LogoutIcon } from "react-icons/ci";
 import { useEffect, useState } from "react";
-import Loader from "../Loader";
+
 import { ClerkUser } from "@/TS/ActionTypes";
-import { LeftSideBarSkeleton } from "../ui/skeletons";
+
 const LeftSideBar = () => {
-  const { user, isLoaded } = useUser() as {
-    user: ClerkUser;
-    isLoaded: boolean;
-  };
+  const { user } = useUser();
 
-  const [loading, setLoading] = useState(true);
-
-  const [userData, setUserData] = useState({});
-
-  const getUserData = async () => {
-    const response = await fetch(`/api/user/${user?.id}`);
-    const data = await response.json();
-    setUserData(data);
-    setLoading(false);
-  };
+  const [userData, setUserData] = useState<ClerkUser | any>({});
 
   useEffect(() => {
-    getUserData();
+    if (user) {
+      const getUserData = async () => {
+        const response = await fetch(`/api/user/${user?.id}`);
+
+        const data = await response.json();
+        setUserData(data);
+      };
+      getUserData();
+    }
   }, [user]);
 
   const userStats = [
-    { number: user?.posts?.length, name: "Posts" },
-    { number: user?.followers?.length, name: "Followers" },
-    { number: user?.following?.length, name: "Following" },
+    { number: userData?.posts?.length || "0", name: "Posts" },
+    { number: userData?.followers?.length || "0", name: "Followers" },
+    { number: userData?.following?.length || "0", name: "Following" },
   ];
 
-  loading || isLoaded ? (
-    <LeftSideBarSkeleton />
-  ) : (
+  return (
     <div
       className="h-screen top-0 bg-dark 
      left-0 sticky  flex flex-col gap-6 px-4 py-6 max-xl:hidden text-[16px]    xl:text-xl font-medium"
@@ -52,13 +50,13 @@ const LeftSideBar = () => {
         <div className="flex flex-col justify-center gap-3 items-center text-white">
           <Link href="/">
             <Avatar>
-              <AvatarImage src={user?.profileImageUrl} />
+              <AvatarImage src={userData?.profileImageUrl} />
 
-              <AvatarFallback>{user?.username?.slice(0, 2)}</AvatarFallback>
+              <AvatarFallback>{userData?.username?.slice(0, 2)}</AvatarFallback>
             </Avatar>
           </Link>
           <p>
-            {user?.firstName} {user?.lastName}
+            {userData?.firstName} {userData?.lastName}
           </p>
         </div>
         <div className="flex flex-row gap-2 items-center text-white">

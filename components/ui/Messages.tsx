@@ -6,7 +6,7 @@ import {
   MdOutlineKeyboardDoubleArrowUp as ArrowUpIcon,
 } from "react-icons/md";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
 
 export const Messages = () => {
   const [open, setOpen] = useState(false);
