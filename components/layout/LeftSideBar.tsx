@@ -21,15 +21,21 @@ const LeftSideBar = () => {
   const [userData, setUserData] = useState<ClerkUser | any>({});
 
   useEffect(() => {
-    if (user) {
-      const getUserData = async () => {
+    const getUserData = async () => {
+      try {
         const response = await fetch(`/api/user/${user?.id}`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
         setUserData(data);
-      };
-      getUserData();
-    }
+      } catch (error) {
+        console.error("Fetch request failed:", error);
+      }
+    };
+    user && getUserData();
   }, [user]);
 
   const userStats = [
@@ -41,7 +47,7 @@ const LeftSideBar = () => {
   return (
     <div
       className="h-screen top-0 bg-dark 
-     left-0 sticky  flex flex-col gap-6 px-4 py-6 max-xl:hidden text-[16px]    xl:text-xl font-medium"
+     left-0 sticky  flex flex-col gap-6 px-4 py-6 max-md:hidden text-[16px]  max-xl:items-end   xl:text-xl font-medium"
     >
       <Link href="/">
         <Image src="/logo.png" alt="Socialize" width={150} height={150} />
@@ -55,11 +61,11 @@ const LeftSideBar = () => {
               <AvatarFallback>{userData?.username?.slice(0, 2)}</AvatarFallback>
             </Avatar>
           </Link>
-          <p>
+          <p className=" max-xl:hidden">
             {userData?.firstName} {userData?.lastName}
           </p>
         </div>
-        <div className="flex flex-row gap-2 items-center text-white">
+        <div className="flex flex-row gap-2 items-center text-white max-xl:hidden ">
           {userStats.map((i) => {
             return (
               <div
@@ -76,15 +82,15 @@ const LeftSideBar = () => {
       <hr />
       <SidebarNavigation />
       <hr />
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center  max-xl:hidden">
         <UserButton />
         <p>Manage Account</p>
       </div>
       <SignedIn>
         <SignOutButton>
-          <div className="flex w-full cursor-pointer gap-2 items-center justify-start">
-            <LogoutIcon size={32} />
-            <p>Log Out</p>
+          <div className="flex w-full cursor-pointer gap-2 p-2  max-xl:justify-end  items-center justify-start">
+            <LogoutIcon size={32} className="  " />
+            <p className="max-xl:hidden ">Log Out</p>
           </div>
         </SignOutButton>
       </SignedIn>

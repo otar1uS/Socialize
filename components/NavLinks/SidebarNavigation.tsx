@@ -11,7 +11,10 @@ const SidebarNavigation = () => {
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-col gap-3">
+    <div
+      className="flex flex-col gap-3 
+    "
+    >
       {sidebarLinks.map((link) => (
         <Link href={link.route} key={link.label}>
           <div
@@ -23,7 +26,7 @@ const SidebarNavigation = () => {
             )}
           >
             {link.icon}
-            <span className="ml-2">{link.label}</span>
+            <span className="ml-2 max-xl:hidden ">{link.label}</span>
           </div>
         </Link>
       ))}

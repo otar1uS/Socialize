@@ -11,10 +11,7 @@ export const GET = async (req: Request, { params }: Params) => {
   try {
     await connectToDataBase();
 
-    const user = await User.findOne({ clerkId: id })
-      .populate("following")
-      .populate("followers")
-      .exec();
+    const user = await User.findOne({ clerkId: id }).populate("posts").exec();
 
     return new Response(JSON.stringify(user), { status: 200 });
   } catch (e) {

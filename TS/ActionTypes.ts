@@ -8,7 +8,7 @@ export interface ButtonProps {
 }
 
 export interface ClerkUser {
-  id: string;
+  _id: ObjectId;
   username?: string;
   firstName: string;
   lastName: string;
@@ -16,7 +16,7 @@ export interface ClerkUser {
   following: string[];
   followers: string[];
 
-  profileImageUrl?: string;
+  profilePhoto?: string;
 }
 type PostContent = {
   postPhoto: boolean;
@@ -33,11 +33,12 @@ type TagContent = {
   tagMessage: string;
 };
 
-type PostContentArray = [PostContent, CaptionContent, TagContent];
+export type PostContentArray = [PostContent, CaptionContent, TagContent];
 
 export type SetErrorsProps = Dispatch<SetStateAction<PostContentArray>>;
 
 type ObjectId = {
+  equals(creator: ObjectId): unknown;
   $oid: string;
 };
 
@@ -47,7 +48,7 @@ type DateObject = {
 
 export type Post = {
   _id: ObjectId;
-  creator: ObjectId;
+  creator: ClerkUser;
   caption: string;
   postPhoto: string;
   tag: string;

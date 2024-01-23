@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { SearchBar } from "../ui/SearchBar";
 import { SignOutButton, SignedIn, UserButton } from "@clerk/nextjs";
 import { CiLogout as LogoutIcon } from "react-icons/ci";
@@ -15,13 +15,37 @@ interface MainContentProps {
 }
 
 const MainContent = ({ children }: MainContentProps) => {
+  const ref = useRef<HTMLDivElement>(null);
   const currentPath = usePathname();
   const pageTitle =
     pageTitles.find((page) => page.url === currentPath)?.title || "Untitled";
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current) {
+        if (typeof window !== "undefined" && window.scrollY > 0) {
+          ref.current.classList.add("opacity-95");
+        } else {
+          ref.current.classList.remove("opacity-95");
+        }
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
+
   return (
-    <div className="bg-dark flex flex-col gap-10 pt-10 flex-1 max-w-3xl px-4 md:px-10 xl:px-20 border-r-2 border-l-2 border-gray">
-      <div className="flex justify-between items-center w-full">
+    <div className="bg-dark  relative flex flex-col gap-10 pt-10 flex-1 max-w-3xl    border-r-2 border-l-2 border-gray">
+      <div
+        ref={ref}
+        className="flex  sticky top-0  max-w-full gap-20   z-[200] bg-black   py-5  justify-between items-center  px-4 md:px-8   "
+      >
         <SearchBar />
 
         <Button asChild className="hidden xl:block bg-cyan">
@@ -39,8 +63,12 @@ const MainContent = ({ children }: MainContentProps) => {
           </SignedIn>
         </div>
       </div>
-      <h1 className="text-xl font-bold">{pageTitle}</h1>
-      <div className="h-screen">{children}</div>
+      <h1 className="text-2xl font-bold mt-2  px-4 md:px-6 xl:px-16">
+        {pageTitle}
+      </h1>
+      <div className="h-full overflow-scroll  overflow-y-hidden overflow:bg-gray  overflow-x-hidden w-full px-4 md:px-8 xl:px-18 ">
+        {children}
+      </div>
     </div>
   );
 };

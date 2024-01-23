@@ -1,6 +1,5 @@
-import { SetErrorsProps } from "@/TS/ActionTypes";
-import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
+import { PostContentArray, SetErrorsProps } from "@/TS/ActionTypes";
+
 import { Dispatch, FormEvent, SetStateAction } from "react";
 
 import { z } from "zod";
@@ -24,7 +23,9 @@ export async function onSubmit(
   setIsLoading: Dispatch<SetStateAction<boolean>>,
   setErrors: SetErrorsProps,
   user: any,
-  router: any
+  router: any,
+  isItEdit?: boolean,
+  errors?: PostContentArray
 ) {
   event.preventDefault();
   setIsLoading(true);
@@ -32,6 +33,8 @@ export async function onSubmit(
   try {
     const formData = new FormData(event.currentTarget);
     const { photo, caption, tag } = Object.fromEntries(formData.entries());
+
+    console.log(photo);
 
     try {
       const post = PostSchema.parse({
@@ -64,7 +67,7 @@ export async function onSubmit(
           const field = subError.path[0];
           const message = subError.message;
 
-          if (field === "postPhoto") {
+          if (!isItEdit && field === "postPhoto") {
             newErrors[0] = { postPhoto: true, postPhotoMessage: message };
           } else if (field === "caption") {
             newErrors[1] = { caption: true, captionMessage: message };
@@ -80,12 +83,15 @@ export async function onSubmit(
       setIsLoading(false);
     }
 
-    await fetch(`/api/create-post/${user?.id}`, {
+    console.log(formData);
+
+    await fetch(`/api/${isItEdit ? "edit-post" : "create-post"}/${user?.id}`, {
       method: "POST",
       body: formData,
     });
-
-    router.push("/");
+    if (!errors || (!errors.postPhoto && !errors.caption && !errors.tag)) {
+      router.push("/");
+    }
   } catch (error) {
     console.log(error);
   } finally {

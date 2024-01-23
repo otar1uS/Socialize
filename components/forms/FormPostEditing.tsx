@@ -1,16 +1,57 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { Button } from "../ui/button";
 import { useUser } from "@clerk/nextjs";
 import { onSubmit } from "./onSubmit";
 import { useRouter } from "next/navigation";
+import { Post } from "@/TS/ActionTypes";
 
-export default function FormPostEditing() {
+export default function FormPostEditing({
+  postInfo,
+  isItEdit = false,
+}: {
+  postInfo: Post;
+  isItEdit: boolean;
+}) {
   const { user } = useUser();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  //photo handling
+  const [currentImage, setCurrentImage] = useState<string>("");
+  // caption handling
+
+  const [captionValue, setCaptionValue] = useState<string>("");
+
+  // tag handling
+  const [tagValue, setTagValue] = useState<string>("");
+
+  useEffect(() => {
+    setCurrentImage(postInfo.postPhoto || "");
+    setCaptionValue(postInfo.caption || "");
+    setTagValue(postInfo.tag || "");
+  }, [postInfo]);
+
+  useEffect(() => {
+    !currentImage && setCurrentImage(postInfo?.postPhoto);
+  }, [currentImage, postInfo?.postPhoto]);
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setCurrentImage(reader.result as string);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   const [errors, setErrors] = useState([
     { postPhoto: false, postPhotoMessage: "" },
@@ -24,42 +65,66 @@ export default function FormPostEditing() {
       onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        onSubmit(event, setIsLoading, setErrors as any, user, router);
+        onSubmit(
+          event,
+          setIsLoading,
+          setErrors as any,
+          user,
+          router,
+          isItEdit,
+          errors as any
+        );
       }}
     >
       <label
         htmlFor="photo"
         className="flex gap-4 items-center text-[#d97706] cursor-pointer"
       >
-        {false && (
+        {currentImage && (
           <Image
-            src={""}
+            src={currentImage}
             alt="post"
-            width={250}
             height={200}
+            width={250}
             className="object-cover rounded-lg"
           />
         )}
 
-        <MdOutlineAddPhotoAlternate size={70} />
+        <MdOutlineAddPhotoAlternate
+          size={70}
+          onClick={() => fileInputRef.current?.click()}
+        />
 
-        <p>Upload a photo</p>
+        <p onClick={() => fileInputRef.current?.click()} className="relative">
+          Upload a photo
+        </p>
       </label>
-      <input type="file" name="photo" className="" />
 
       {errors[0].postPhoto && (
         <p className="text-red-500">{errors[0].postPhotoMessage}</p>
       )}
+      <input
+        type="file"
+        onChange={handleImageUpload}
+        ref={fileInputRef}
+        name="photo"
+        className="hidden absolute "
+      />
 
       <div>
         <label htmlFor="caption" className="text-[#d97706]">
           Caption
         </label>
         <textarea
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setCaptionValue(event.target.value);
+          }}
+          value={captionValue}
           name="caption"
           rows={3}
           placeholder="What's on your mind?"
           className="w-full 
+          
           
           rounded-md p-2 bg-black text-white
           border-black
@@ -78,6 +143,10 @@ export default function FormPostEditing() {
           Tag
         </label>
         <input
+          value={tagValue}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setTagValue(event.target.value);
+          }}
           name="tag"
           placeholder="#tag"
           className="w-full input 
@@ -95,7 +164,7 @@ export default function FormPostEditing() {
       </div>
 
       <Button size={"lg"} type="submit" className="bg-black">
-        {isLoading ? "Loading..." : "Post"}
+        {isLoading ? "Loading..." : "Publish"}
       </Button>
     </form>
   );

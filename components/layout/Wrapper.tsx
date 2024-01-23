@@ -4,6 +4,7 @@ import {
   SignedIn,
   SignedOut,
   RedirectToSignIn,
+  useUser,
 } from "@clerk/nextjs";
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
