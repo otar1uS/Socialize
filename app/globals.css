@@ -82,12 +82,10 @@ body,
 }
 
 .msg-open-transition {
-  transition: 1s ease-in;
+  transition: 0.3s ease-in-out;
   height: 300px;
 }
 .msg-close-transition {
   transition: 1s ease-in;
   height: 0px;
 }
-
-

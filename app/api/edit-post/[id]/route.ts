@@ -20,7 +20,7 @@ export const POST = async (req: Request, { params }: Params) => {
       tag,
     };
 
-    if (typeof post?.postPhoto !== "string") {
+    if (post.postPhoto.name !== "undefined") {
       const bytes = await post.postPhoto.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const postPhotoPath = path.join(
@@ -33,23 +33,36 @@ export const POST = async (req: Request, { params }: Params) => {
       await writeFile(postPhotoPath, buffer);
     }
 
-    console.log(post.postPhoto.name);
     const postPhotoLocation = `/uploads/${post.postPhoto.name}`;
 
     await connectToDataBase();
-    const postResponse = await Post.findByIdAndUpdate(
-      params.id,
-      {
-        $set: {
-          caption: caption,
-          postPhoto: postPhotoLocation,
-          tag: tag,
-        },
-      },
-      { new: true, useFindAndModify: false }
-    );
 
-    await postResponse.save();
+    if (post.postPhoto.name !== "undefined") {
+      const postResponse = await Post.findByIdAndUpdate(
+        params.id,
+        {
+          $set: {
+            caption: caption,
+            postPhoto: postPhotoLocation,
+            tag: tag,
+          },
+        },
+        { new: true, useFindAndModify: false }
+      );
+      await postResponse.save();
+    } else {
+      const postResponse = await Post.findByIdAndUpdate(
+        params.id,
+        {
+          $set: {
+            caption: caption,
+            tag: tag,
+          },
+        },
+        { new: true, useFindAndModify: false }
+      );
+      await postResponse.save();
+    }
 
     return new Response(JSON.stringify(post), { status: 200 });
   } catch (err) {

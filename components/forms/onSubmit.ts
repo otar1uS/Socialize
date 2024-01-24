@@ -1,4 +1,4 @@
-import { PostContentArray, SetErrorsProps } from "@/TS/ActionTypes";
+import { SetErrorsProps } from "@/TS/ActionTypes";
 
 import { Dispatch, FormEvent, SetStateAction } from "react";
 
@@ -25,7 +25,8 @@ export async function onSubmit(
   user: any,
   router: any,
   isItEdit?: boolean,
-  errors?: PostContentArray
+
+  postId?: string
 ) {
   event.preventDefault();
   setIsLoading(true);
@@ -33,8 +34,7 @@ export async function onSubmit(
   try {
     const formData = new FormData(event.currentTarget);
     const { photo, caption, tag } = Object.fromEntries(formData.entries());
-
-    console.log(photo);
+    let newErrors: any;
 
     try {
       const post = PostSchema.parse({
@@ -56,7 +56,8 @@ export async function onSubmit(
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Initialize a new errors object
-        const newErrors = [
+
+        newErrors = [
           { postPhoto: false, postPhotoMessage: "" },
           { caption: false, captionMessage: "" },
           { tag: false, tagMessage: "" },
@@ -77,19 +78,24 @@ export async function onSubmit(
         }
 
         // Update the state with the new errors
+
         setErrors(newErrors as any);
       }
 
       setIsLoading(false);
     }
 
-    console.log(formData);
+    if (!newErrors[0].postPhoto && !newErrors[1].caption && !newErrors[2].tag) {
+      await fetch(
+        `/api/${isItEdit ? "edit-post" : "create-post"}/${
+          isItEdit ? postId : user?.id
+        }`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-    await fetch(`/api/${isItEdit ? "edit-post" : "create-post"}/${user?.id}`, {
-      method: "POST",
-      body: formData,
-    });
-    if (!errors || (!errors.postPhoto && !errors.caption && !errors.tag)) {
       router.push("/");
     }
   } catch (error) {

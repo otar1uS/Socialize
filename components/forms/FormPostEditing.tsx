@@ -9,7 +9,9 @@ import { useRouter } from "next/navigation";
 import { Post } from "@/TS/ActionTypes";
 
 export default function FormPostEditing({
-  postInfo,
+  postInfo = {
+    _id: "",
+  } as any,
   isItEdit = false,
 }: {
   postInfo: Post;
@@ -31,6 +33,7 @@ export default function FormPostEditing({
   const [tagValue, setTagValue] = useState<string>("");
 
   useEffect(() => {
+    if (!postInfo._id) return;
     setCurrentImage(postInfo.postPhoto || "");
     setCaptionValue(postInfo.caption || "");
     setTagValue(postInfo.tag || "");
@@ -72,7 +75,8 @@ export default function FormPostEditing({
           user,
           router,
           isItEdit,
-          errors as any
+
+          postInfo._id as any
         );
       }}
     >

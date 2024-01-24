@@ -5,10 +5,13 @@ import FormPostEditing from "@/components/forms/FormPostEditing";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const CreatePost = () => {
+const EditPost = () => {
   const { id } = useParams<{ id: string }>();
 
   const [currentPost, setCurrentPost] = useState<Post | any>({});
+
+
+  
 
   useEffect(() => {
     const fetchingPostInfo = async () => {
@@ -36,4 +39,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default EditPost;
