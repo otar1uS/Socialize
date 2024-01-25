@@ -50,7 +50,7 @@ export const LeftSideBarSkeleton = () => {
               className="flex gap-1 items-center justify-start p-1  text-yellow "
             >
               <div className="w-[24px] h-[24px] rounded-md bg-indigo-200"></div>
-              <span className="h-2 w-12 rounded-lg bg-slate-200"></span>
+              <span className="h-2 w-[70px] rounded-lg bg-slate-200"></span>
             </div>
           );
         })}
@@ -71,34 +71,32 @@ export const LeftSideBarSkeleton = () => {
 
 export const CardsSkeleton = () => {
   return (
-    <div className="mb-14">
+    <div className="mb-14 ">
       <Card>
-        <CardHeader className="flex justify-between ">
+        <CardHeader className="flex justify-between  ">
           <CardTitle className="flex justify-between items-center">
-            <div className="flex gap-2 items-center mb-2">
-              <Avatar>
-                <AvatarImage src={"/default-profile.jpg"} />
-              </Avatar>
-              <p className="text-[20px] w-10 h-5 bg-indigo-200"></p>
+            <div className="flex flex-col gap-2 items-center mb-2">
+              <div className="flex gap-3 items-center">
+                <Avatar>
+                  <AvatarImage src={"/default-profile.jpg"} />
+                </Avatar>
+                <p className="text-[20px]  w-[120px] rounded-full h-5 bg-indigo-200"></p>
+              </div>
+              <p className="text-[20px] justify-start w-12 rounded-full h-5 bg-indigo-200" />
             </div>
             <div>
-              <p className="text-[20px] w-10 h-5 bg-indigo-200" />
+              <p className="text-[20px] w-[70px] rounded-full h-5 bg-indigo-200" />
             </div>
           </CardTitle>
-          <CardDescription>
-            <p className="text-[20px] w-10 h-5 bg-indigo-200" />
-          </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-start items-center">
-          <div className="w-[500 ] h-[500] w-full"></div>
+          <div className=" h-[500px] w-full bg-indigo-200 rounded-lg "></div>
         </CardContent>
-        <CardFooter>
-          <div className="flex justify-between items-center w-full">
-            <p className="text-cyan font-[700] w-10 bg-indigo-200"></p>
-            <div className="flex gap-2 items-center cursor-pointer ">
-              <p className="text-[16px] w-6 h-4 text-gray-400 font-bold text-blue-800"></p>
-              <FaEdit size={20} className="text-gray-400 text-idigo-200" />
-            </div>
+        <CardFooter className="flex items-center justify-between">
+          <div className="w-12 h-4 rounded-full bg-slate-200"></div>
+          <div className="flex gap-2 items-center cursor-pointer ">
+            <p className="text-[16px] rounded-full bg-indigo-200 w-10 h-4 text-gray-400 font-bold text-blue-800"></p>
+            <FaEdit size={20} className="text-gray-400 text-idigo-200" />
           </div>
         </CardFooter>
       </Card>

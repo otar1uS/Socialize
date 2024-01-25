@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -17,16 +15,12 @@ import {
   AvatarImage,
 } from "../../components/shadcn-ui/avatar";
 
-import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { Post } from "@/TS/ActionTypes";
-import { format } from "path";
+
 import Link from "next/link";
 
-export const Cards = ({ postData }: { postData: Post }) => {
-  const { user } = useUser();
-  //!use hook to get user data correctly
-
+export const Cards = ({ postData }: { postData: Post | null }) => {
   const date: Date = new Date(String(postData?.createdAt));
   let formattedDate;
 
@@ -60,13 +54,13 @@ export const Cards = ({ postData }: { postData: Post }) => {
           </CardTitle>
           <CardDescription>
             <h2 className="text-[18px] font-[500] text-black leading-tight  ">
-              {postData.caption}{" "}
+              {postData?.caption}{" "}
             </h2>
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-start items-center">
           <Image
-            src={postData?.postPhoto}
+            src={postData ? postData.postPhoto : ""}
             alt="beautiful picture"
             width={500}
             height={500}
@@ -77,7 +71,7 @@ export const Cards = ({ postData }: { postData: Post }) => {
           <div className="flex justify-between items-center w-full">
             <p className="text-cyan font-[700]">{postData?.tag}</p>
             <Link
-              href={`/edit-post/${postData._id}`}
+              href={`/edit-post/${postData?._id}`}
               className="flex gap-2 items-center cursor-pointer "
             >
               <p className="text-[16px] text-gray-400 font-bold text-blue-800">

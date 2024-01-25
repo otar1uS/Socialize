@@ -17,8 +17,13 @@ interface MainContentProps {
 const MainContent = ({ children }: MainContentProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const currentPath = usePathname();
-  const pageTitle =
-    pageTitles.find((page) => page.url === currentPath)?.title || "Untitled";
+  const regex = /^\/([^\/]+)/;
+  const firstPath = currentPath.match(regex)
+    ? currentPath.match(regex)?.[0]
+    : currentPath;
+
+  // Get title of current path
+  const title = pageTitles.find((page) => page.url === firstPath)?.title || "";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +69,7 @@ const MainContent = ({ children }: MainContentProps) => {
         </div>
       </div>
       <h1 className="text-2xl font-bold mt-2  px-4 md:px-6 xl:px-16">
-        {pageTitle}
+        {title}
       </h1>
       <div className="h-full overflow-scroll  overflow-y-hidden overflow:bg-gray  overflow-x-hidden w-full px-4 md:px-8 xl:px-18 ">
         {children}

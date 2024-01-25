@@ -1,6 +1,5 @@
-import Post from "@/lib/models/postModel";
+import User from "@/lib/models/userModel";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
-
 
 export const GET = async (
   req: Request,
@@ -11,14 +10,16 @@ export const GET = async (
   try {
     await connectToDataBase();
 
-    const searchedPosts = await Post.find({
+    const searchedPosts = await User.find({
+      query,
       $or: [
-        { caption: { $regex: query, $options: "i" } },
-        { tag: { $regex: query, $options: "i" } },
+        { firstName: { $regex: query, $options: "i" } },
+        { lastName: { $regex: query, $options: "i" } },
       ],
     })
-      .populate("creator likes")
+      .populate("posts")
       .exec();
+
     console.log(`Searched Posts: ${JSON.stringify(searchedPosts)}`);
 
     return new Response(JSON.stringify(searchedPosts), { status: 200 });

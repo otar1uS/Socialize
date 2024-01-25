@@ -20,7 +20,7 @@ const SearchPost = () => {
     async function fetchingData() {
       setLoading(true);
       try {
-        const responsePosts = await fetch(`/api/search-post/${query}`);
+        const responsePosts = await fetch(`/api/search-people/${query}`);
         const postsData = await responsePosts.json();
         setPosts(postsData);
         setLoading(false);
@@ -45,8 +45,8 @@ const SearchPost = () => {
     return <CardsSkeleton />;
   } else {
     return (
-      <div className="h-full w-full flex flex-col gap-10 ">
-        <div className="flex justify-start items-center gap-5">
+      <div className="h-full w-full flex flex-col gap-10">
+        <div className="flex justify-start items-center gap-5 ">
           <Button asChild className="bg-cyan">
             <Link href={`/search/posts/${query}`}>Posts</Link>
           </Button>
