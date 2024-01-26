@@ -26,6 +26,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  followers: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    default: [],
+  },
+  following: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    default: [],
+  },
   posts: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
     default: [],
@@ -38,14 +46,7 @@ const UserSchema = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
     default: [],
   },
-  followers: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "followers" }],
-    default: [],
-  },
-  following: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "following" }],
-    default: [],
-  },
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -53,5 +54,4 @@ const UserSchema = new mongoose.Schema({
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
-
 export default User;

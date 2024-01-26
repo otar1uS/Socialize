@@ -11,7 +11,6 @@ import React, { useEffect, useState } from "react";
 const SearchPost = () => {
   const { query } = useParams();
 
-  console.log(query);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
@@ -20,7 +19,7 @@ const SearchPost = () => {
     async function fetchingData() {
       setLoading(true);
       try {
-        const responsePosts = await fetch(`/api/search-post/${query}`);
+        const responsePosts = await fetch(`/api/search/posts/${query}`);
         const postsData = await responsePosts.json();
         setPosts(postsData);
         setLoading(false);
@@ -39,15 +38,13 @@ const SearchPost = () => {
     return null;
   }
 
-  console.log(posts);
-
   if (loading) {
     return <CardsSkeleton />;
   } else {
     return (
       <div className="h-full w-full flex flex-col gap-10 ">
         <div className="flex justify-start items-center gap-5">
-          <Button asChild className="bg-cyan">
+          <Button asChild className="bg-pink-700">
             <Link href={`/search/posts/${query}`}>Posts</Link>
           </Button>
           <Button asChild className="bg-cyan">

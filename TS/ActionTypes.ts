@@ -15,6 +15,7 @@ export interface ClerkUser {
   posts: string[];
   following: string[];
   followers: string[];
+  clerkId: string;
 
   profilePhoto?: string;
 }
@@ -55,4 +56,21 @@ export type Post = {
   likes: string[];
   createdAt: DateObject;
   __v: number;
+};
+
+export type User = {
+  _id: string;
+  clerkId: string;
+  __v: number;
+  createdAt: string;
+  email: string;
+  firstName: string;
+  followers: string[];
+  following: string[];
+  lastName: string;
+  likedPosts: string[];
+  posts: Post[];
+  profilePhoto: string;
+  savedPosts: string[];
+  username: string;
 };

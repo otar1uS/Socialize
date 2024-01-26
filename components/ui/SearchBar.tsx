@@ -8,11 +8,11 @@ export const SearchBar = () => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`search/posts/${query}`);
+    router.replace(`/search/posts/${query}`);
   };
   const handleKeyPress = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
-      router.push(`search/posts/${query}`);
+      router.replace(`/search/posts/${query}`);
     }
   };
 

@@ -34,7 +34,11 @@ export async function onSubmit(
   try {
     const formData = new FormData(event.currentTarget);
     const { photo, caption, tag } = Object.fromEntries(formData.entries());
-    let newErrors: any;
+    let newErrors: any = [
+      { postPhoto: false, postPhotoMessage: "" },
+      { caption: false, captionMessage: "" },
+      { tag: false, tagMessage: "" },
+    ];
 
     try {
       const post = PostSchema.parse({
@@ -56,12 +60,6 @@ export async function onSubmit(
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Initialize a new errors object
-
-        newErrors = [
-          { postPhoto: false, postPhotoMessage: "" },
-          { caption: false, captionMessage: "" },
-          { tag: false, tagMessage: "" },
-        ];
 
         // Set the error for each field that caused a validation error
         for (const subError of error.errors) {
@@ -85,18 +83,24 @@ export async function onSubmit(
       setIsLoading(false);
     }
 
-    if (!newErrors[0].postPhoto && !newErrors[1].caption && !newErrors[2].tag) {
-      await fetch(
-        `/api/${isItEdit ? "edit-post" : "create-post"}/${
-          isItEdit ? postId : user?.id
-        }`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+    if (newErrors) {
+      if (
+        !newErrors[0].postPhoto &&
+        !newErrors[1].caption &&
+        !newErrors[2].tag
+      ) {
+        await fetch(
+          `/api/${isItEdit ? "edit-post" : "create-post"}/${
+            isItEdit ? postId : user?.id
+          }`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
-      router.push("/");
+        router.push("/");
+      }
     }
   } catch (error) {
     console.log(error);

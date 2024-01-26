@@ -14,12 +14,18 @@ export default function FormPostEditing({
   } as any,
   isItEdit = false,
 }: {
-  postInfo: Post;
-  isItEdit: boolean;
+  postInfo?: Post;
+  isItEdit?: boolean;
 }) {
   const { user } = useUser();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [errors, setErrors] = useState([
+    { postPhoto: false, postPhotoMessage: "" },
+    { caption: false, captionMessage: "" },
+    { tag: false, tagMessage: "" },
+  ]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,12 +61,6 @@ export default function FormPostEditing({
       reader.readAsDataURL(file);
     }
   };
-
-  const [errors, setErrors] = useState([
-    { postPhoto: false, postPhotoMessage: "" },
-    { caption: false, captionMessage: "" },
-    { tag: false, tagMessage: "" },
-  ]);
 
   return (
     <form
@@ -167,7 +167,7 @@ export default function FormPostEditing({
         )}
       </div>
 
-      <Button size={"lg"} type="submit" className="bg-black">
+      <Button type="submit" className="bg-black">
         {isLoading ? "Loading..." : "Publish"}
       </Button>
     </form>

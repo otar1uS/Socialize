@@ -1,4 +1,4 @@
-import Post from "@/lib/models/postModel";
+import Post from "@/lib/models/Post";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 

@@ -1,65 +1,49 @@
 "use client";
 
-import { Post } from "@/TS/ActionTypes";
-import { Cards } from "@/components/layout/Cards";
+import { User } from "@/TS/ActionTypes";
+import Loader from "@/components/Loader";
+import UserCard from "@/components/layout/UserCard";
 import { Button } from "@/components/shadcn-ui/button";
-import { CardsSkeleton } from "@/components/shadcn-ui/skeletons";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const SearchPost = () => {
+const SearchPeople = () => {
   const { query } = useParams();
 
-  console.log(query);
-  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isMounted, setIsMounted] = useState(false);
+
+  const [searchedPeople, setSearchedPeople] = useState<User[]>([]);
 
   useEffect(() => {
-    async function fetchingData() {
-      setLoading(true);
-      try {
-        const responsePosts = await fetch(`/api/search-people/${query}`);
-        const postsData = await responsePosts.json();
-        setPosts(postsData);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
+    async function getSearchedPeople() {
+      const response = await fetch(`/api/search/user/${query}`);
+      const data = await response.json();
+      setSearchedPeople(data);
+      setLoading(false);
     }
-    fetchingData();
+
+    getSearchedPeople();
   }, [query]);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
-
-  console.log(posts);
-
-  if (loading) {
-    return <CardsSkeleton />;
-  } else {
-    return (
-      <div className="h-full w-full flex flex-col gap-10">
-        <div className="flex justify-start items-center gap-5 ">
-          <Button asChild className="bg-cyan">
-            <Link href={`/search/posts/${query}`}>Posts</Link>
-          </Button>
-          <Button asChild className="bg-cyan">
-            <Link href={`/search/people/${query}`}>people</Link>
-          </Button>
-        </div>
-        {posts?.map((post: Post) => {
-          return <Cards key={post.__v} postData={post} />;
-        })}
+  return loading ? (
+    <Loader />
+  ) : (
+    <div className="flex flex-col gap-10">
+      <div className="flex gap-6">
+        <Button className="bg-cyan" asChild>
+          <Link href={`/search/posts/${query}`}>Posts</Link>
+        </Button>
+        <Button className="bg-pink-700" asChild>
+          <Link href={`/search/people/${query}`}>People</Link>
+        </Button>
       </div>
-    );
-  }
+
+      {searchedPeople.map((person) => (
+        <UserCard key={person._id} userData={person} />
+      ))}
+    </div>
+  );
 };
 
-export default SearchPost;
+export default SearchPeople;

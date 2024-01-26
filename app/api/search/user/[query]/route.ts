@@ -1,4 +1,4 @@
-import User from "@/lib/models/userModel";
+import User from "@/lib/models/User";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
 
 export const GET = async (
@@ -10,21 +10,19 @@ export const GET = async (
   try {
     await connectToDataBase();
 
-    const searchedPosts = await User.find({
-      query,
+    const searchedUsers = await User.find({
       $or: [
+        { username: { $regex: query, $options: "i" } },
         { firstName: { $regex: query, $options: "i" } },
         { lastName: { $regex: query, $options: "i" } },
       ],
     })
-      .populate("posts")
+      .populate("posts savedPosts  likedPosts  followers  following")
       .exec();
 
-    console.log(`Searched Posts: ${JSON.stringify(searchedPosts)}`);
-
-    return new Response(JSON.stringify(searchedPosts), { status: 200 });
+    return new Response(JSON.stringify(searchedUsers), { status: 200 });
   } catch (err) {
     console.log(err);
-    return new Response("Failed to get posts by search", { status: 500 });
+    return new Response("Failed to get users by search", { status: 500 });
   }
 };

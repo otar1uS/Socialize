@@ -2,7 +2,7 @@ interface EmailAddress {
   email_address: string;
 }
 
-import User from "../models/userModel";
+import User from "../models/User";
 import { connectToDataBase } from "../mongoDB/mongoose";
 
 export const createOrUpdateUser = async (

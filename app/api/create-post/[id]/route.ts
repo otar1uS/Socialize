@@ -1,5 +1,5 @@
-import Post from "@/lib/models/postModel";
-import User from "@/lib/models/userModel";
+import Post from "@/lib/models/Post";
+import User from "@/lib/models/User";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
 import { writeFile } from "fs/promises";
 import path from "path";

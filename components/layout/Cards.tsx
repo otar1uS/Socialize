@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -16,11 +18,22 @@ import {
 } from "../../components/shadcn-ui/avatar";
 
 import Image from "next/image";
-import { Post } from "@/TS/ActionTypes";
+import { Post, User } from "@/TS/ActionTypes";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export const Cards = ({ postData }: { postData: Post | null }) => {
+export const Cards = ({
+  postData,
+  userInfo,
+  isItProfile,
+}: {
+  postData: Post;
+  userInfo?: User;
+  isItProfile?: boolean;
+}) => {
+  const router = useRouter();
+
   const date: Date = new Date(String(postData?.createdAt));
   let formattedDate;
 
@@ -37,15 +50,46 @@ export const Cards = ({ postData }: { postData: Post | null }) => {
           <CardTitle className="flex justify-between items-center">
             <div className="flex gap-2 items-center mb-2">
               <Avatar>
-                <AvatarImage src={postData?.creator?.profilePhoto} />
+                <AvatarImage
+                  src={
+                    isItProfile
+                      ? userInfo?.profilePhoto
+                      : postData?.creator?.profilePhoto
+                  }
+                  onClick={() =>
+                    router.replace(
+                      `/profile/${
+                        isItProfile
+                          ? userInfo?.clerkId
+                          : postData?.creator.clerkId
+                      }`
+                    )
+                  }
+                  className="cursor-pointer"
+                />
                 <AvatarFallback>
-                  {postData?.creator?.firstName.slice(0, 2).toUpperCase()}
+                  {isItProfile
+                    ? userInfo?.firstName.slice(0, 2).toUpperCase()
+                    : postData?.creator?.firstName.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <p className="text-[20px]">
-                {postData?.creator?.firstName +
-                  " " +
-                  postData?.creator?.lastName}
+              <p
+                className="text-[20px] cursor-pointer"
+                onClick={() =>
+                  router.replace(
+                    `/profile/${
+                      isItProfile
+                        ? userInfo?.clerkId
+                        : postData?.creator.clerkId
+                    }`
+                  )
+                }
+              >
+                {isItProfile
+                  ? userInfo?.firstName + " " + userInfo?.lastName
+                  : postData?.creator?.firstName +
+                    " " +
+                    postData?.creator?.lastName}
               </p>
             </div>
             <div>
