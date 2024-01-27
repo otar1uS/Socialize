@@ -1,3 +1,4 @@
+import Post from "@/lib/models/Post";
 import User from "@/lib/models/User";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
 
@@ -6,13 +7,10 @@ type Params = {
 };
 
 export const GET = async (req: Request, { params }: Params) => {
-  const { id } = params;
-
+  await connectToDataBase();
   try {
-    await connectToDataBase();
-
-    const user = await User.findOne({ clerkId: id })
-      .populate("posts savedPosts likedPosts followers following")
+    const user = await User.findOne({ clerkId: params.id })
+      .populate("posts savedPosts  likedPosts  followers  following")
       .exec();
 
     return new Response(JSON.stringify(user), { status: 200 });

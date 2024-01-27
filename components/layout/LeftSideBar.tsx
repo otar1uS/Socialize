@@ -20,27 +20,31 @@ const LeftSideBar = () => {
   const { user, isLoaded } = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [userData, setUserData] = useState<ClerkUser | any>({});
-
+  const [userData, setUserData] = useState<ClerkUser | any>();
   useEffect(() => {
     const getUserData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/user/${user?.id}`);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (user && user.id) {
+          const response = await fetch(`/api/user/${user.id}`);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          setUserData(data);
         }
 
-        const data = await response.json();
-        setUserData(data);
         setIsLoading(false);
       } catch (error) {
         console.error("Fetch request failed:", error);
       }
     };
-    user && getUserData();
-  }, [user]);
+
+    getUserData();
+  }, [user, userData]);
 
   const userStats = [
     { number: userData?.posts?.length || "0", name: "Posts" },
@@ -48,7 +52,7 @@ const LeftSideBar = () => {
     { number: userData?.following?.length || "0", name: "Following" },
   ];
 
-  return !isLoaded && isLoading ? (
+  return isLoading ? (
     <LeftSideBarSkeleton />
   ) : (
     <div
@@ -62,7 +66,7 @@ const LeftSideBar = () => {
         <div className="flex flex-col justify-center gap-3 items-center text-white">
           <Link href="/">
             <Avatar>
-              <AvatarImage src={userData?.profileImageUrl} />
+              <AvatarImage src={userData?.profilePhoto} />
 
               <AvatarFallback>{userData?.username?.slice(0, 2)}</AvatarFallback>
             </Avatar>

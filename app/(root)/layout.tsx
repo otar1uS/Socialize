@@ -4,8 +4,7 @@ import "../globals.css";
 import LeftSideBar from "@/components/layout/LeftSideBar";
 import MainContent from "@/components/layout/MainContent";
 import RightSideBar from "@/components/layout/RightSideBar";
-import { Suspense } from "react";
-import { LeftSideBarSkeleton } from "@/components/shadcn-ui/skeletons";
+
 import BottomBar from "@/components/layout/BottomBar";
 import Wrapper from "@/components/layout/Wrapper";
 
@@ -26,9 +25,8 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <main className=" flex flex-row justify-center h-full bg-dark ">
-            <Suspense fallback={<LeftSideBarSkeleton />}>
-              <LeftSideBar />
-            </Suspense>
+            <LeftSideBar />
+
             <MainContent>{children}</MainContent>
             <RightSideBar />
           </main>

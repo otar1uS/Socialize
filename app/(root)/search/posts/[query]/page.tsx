@@ -38,25 +38,25 @@ const SearchPost = () => {
     return null;
   }
 
-  if (loading) {
-    return <CardsSkeleton />;
-  } else {
-    return (
-      <div className="h-full w-full flex flex-col gap-10 ">
-        <div className="flex justify-start items-center gap-5">
-          <Button asChild className="bg-pink-700">
-            <Link href={`/search/posts/${query}`}>Posts</Link>
-          </Button>
-          <Button asChild className="bg-cyan">
-            <Link href={`/search/people/${query}`}>people</Link>
-          </Button>
-        </div>
-        {posts?.map((post: Post) => {
-          return <Cards key={post.__v} postData={post} />;
-        })}
+  console.log(posts);
+
+  return loading ? (
+    <CardsSkeleton />
+  ) : (
+    <div className="h-full w-full flex flex-col gap-10 ">
+      <div className="flex justify-start items-center gap-5">
+        <Button asChild className="bg-pink-700">
+          <Link href={`/search/posts/${query}`}>Posts</Link>
+        </Button>
+        <Button asChild className="bg-cyan">
+          <Link href={`/search/people/${query}`}>people</Link>
+        </Button>
       </div>
-    );
-  }
+      {posts?.map((post: Post) => {
+        return <Cards key={post.__v} postData={post} />;
+      })}
+    </div>
+  );
 };
 
 export default SearchPost;

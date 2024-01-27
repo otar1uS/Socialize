@@ -5,7 +5,9 @@ export const GET = async () => {
   try {
     await connectToDataBase();
 
-    const posts = await Post.find({}).populate("creator likes").exec();
+    const posts = await Post.find({})
+      .populate("posts savedPosts  likedPosts  followers  following")
+      .exec();
 
     return new Response(JSON.stringify(posts), { status: 200 });
   } catch (e) {

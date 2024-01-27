@@ -3,7 +3,7 @@
 import { Post } from "@/TS/ActionTypes";
 import { Cards } from "@/components/layout/Cards";
 import { CardsSkeleton } from "@/components/shadcn-ui/skeletons";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -26,13 +26,13 @@ const Home = () => {
     fetchingData();
   }, []);
 
-  return (
+  return loading ? (
+    <CardsSkeleton />
+  ) : (
     <div className="h-full  ">
-      <Suspense fallback={<CardsSkeleton />}>
-        {posts.map((post: Post) => (
-          <Cards key={post.caption} postData={post} />
-        ))}
-      </Suspense>
+      {posts.map((post: Post) => (
+        <Cards key={post.caption} postData={post} />
+      ))}
     </div>
   );
 };

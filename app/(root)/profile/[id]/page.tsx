@@ -8,18 +8,22 @@ import { User } from "@/TS/ActionTypes";
 import Loader from "@/components/Loader";
 import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/shadcn-ui/button";
 import { Cards } from "@/components/layout/Cards";
-import Post from "@/lib/models/Post";
+import UserCard from "@/components/layout/UserCard";
+import { followUnfollowFunction } from "@/components/forms/onFollow";
 
 const Profile = () => {
   const { user } = useUser();
   const { id } = useParams();
 
   const [userStats, setUserStats] = useState<User>();
+  const [userNewStats, setUsersNewStats] = useState<User>();
+  const [show, setShow] = useState<string>("Posts");
   const [loading, setLoading] = useState(false);
+  const [following, setIsFollowing] = useState<boolean>(false);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -39,15 +43,13 @@ const Profile = () => {
       }
     };
     id && getUserData();
-  }, [id]);
+  }, [id, userNewStats, following]);
 
   const userInfo = [
     { number: userStats?.posts?.length || "0", name: "Posts" },
     { number: userStats?.followers?.length || "0", name: "Followers" },
     { number: userStats?.following?.length || "0", name: "Following" },
   ];
-
-  console.log(userStats);
 
   const isFollowing = userStats?.followers?.find(
     (curU: any) => curU.clerkId === user?.id
@@ -84,6 +86,7 @@ const Profile = () => {
                       asChild
                       variant="ghost"
                       className="cursor-pointer bg-black hover:bg-cyan"
+                      onClick={() => setShow(i.name)}
                     >
                       <div className="flex  items-center  gap-1">
                         <p className="text-purple-500 font-[600]">{i.number}</p>
@@ -93,34 +96,66 @@ const Profile = () => {
                   ))}
                 </div>
               </div>
-              {!isFollowing ? (
-                <FollowIcon
-                  className="ml-4 text-cyan cursor-pointer hover:text-pink-400"
-                  size={28}
-                />
-              ) : (
-                <FollowingIcon
-                  className="ml-4 text-pink-700 pointer hover:text-blue-300"
-                  size={28}
-                />
-              )}
+              {user?.id !== userStats?.clerkId ? (
+                !isFollowing ? (
+                  <FollowIcon
+                    onClick={() =>
+                      followUnfollowFunction(
+                        user?.id,
+                        userStats?._id,
+                        setUsersNewStats
+                      )
+                    }
+                    className="ml-4 text-cyan cursor-pointer hover:text-pink-400"
+                    size={28}
+                  />
+                ) : (
+                  <FollowingIcon
+                    onClick={() =>
+                      followUnfollowFunction(
+                        user?.id,
+                        userStats?._id,
+                        setUsersNewStats
+                      )
+                    }
+                    className="ml-4 text-pink-700 cursor-pointer hover:text-blue-300"
+                    size={28}
+                  />
+                )
+              ) : null}
             </div>
           </div>
         </div>
       </div>
       <div className="mt-4">
-        <h1 className="text-pink-500  text-[20px] font-bold my-8">Posts</h1>
+        <h1 className="text-pink-500  text-[20px] font-bold my-8">{show}</h1>
         <div className="flex flex-col gap-4">
-          {userStats?.posts?.map((post: any) => {
-            return (
+          {show === "Followers" &&
+            userStats?.followers?.map((follower: any) => (
+              <UserCard
+                key={follower.clerkId}
+                userData={follower}
+                setIsFollowing={setIsFollowing}
+              />
+            ))}
+          {show === "Following" &&
+            userStats?.following?.map((following: any) => (
+              <UserCard
+                key={following.clerkId}
+                userData={following}
+                setIsFollowing={setIsFollowing}
+              />
+            ))}
+          {show !== "Followers" &&
+            show !== "Following" &&
+            userStats?.posts?.map((post: any) => (
               <Cards
-                key={post.firstName + 1}
+                key={post.clerkId}
                 postData={post}
                 userInfo={userStats}
                 isItProfile={true}
               />
-            );
-          })}
+            ))}
         </div>
       </div>
     </div>

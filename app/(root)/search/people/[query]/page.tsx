@@ -17,6 +17,7 @@ const SearchPeople = () => {
 
   useEffect(() => {
     async function getSearchedPeople() {
+      setLoading(true);
       const response = await fetch(`/api/search/user/${query}`);
       const data = await response.json();
       setSearchedPeople(data);

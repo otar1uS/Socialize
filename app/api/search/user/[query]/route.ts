@@ -23,6 +23,8 @@ export const GET = async (
     return new Response(JSON.stringify(searchedUsers), { status: 200 });
   } catch (err) {
     console.log(err);
-    return new Response("Failed to get users by search", { status: 500 });
+    return new Response(`Failed to get users by search ${err}`, {
+      status: 500,
+    });
   }
 };

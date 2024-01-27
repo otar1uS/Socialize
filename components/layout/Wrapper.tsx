@@ -12,7 +12,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
     <ClerkProvider>
       <SignedIn>{children}</SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <RedirectToSignIn redirectUrl="/sign-in" />
       </SignedOut>
     </ClerkProvider>
   );

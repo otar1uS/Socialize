@@ -11,9 +11,16 @@ import React, { useEffect, useState } from "react";
 import Loader from "../Loader";
 import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
 import { useRouter } from "next/navigation";
+import { followUnfollowFunction } from "../forms/onFollow";
 
-const UserCard = ({ userData }: { userData: User }) => {
-  const { user } = useUser();
+const UserCard = ({
+  userData,
+  setIsFollowing,
+}: {
+  userData: User;
+  setIsFollowing?: any;
+}) => {
+  const { user, isLoaded } = useUser();
 
   const router = useRouter();
 
@@ -64,10 +71,25 @@ const UserCard = ({ userData }: { userData: User }) => {
       >
         {userData.firstName + " " + userData.lastName}
       </p>
-      {!isFollowing ? (
-        <FollowIcon className="ml-4 text-cyan cursor-pointer" size={24} />
+
+      {user?.id === userData.clerkId ? null : !isFollowing ? (
+        <FollowIcon
+          onClick={() => {
+            followUnfollowFunction(user?.id, userData?._id, setCurrentUser);
+            setIsFollowing((e: any) => !e);
+          }}
+          className="ml-4 text-cyan cursor-pointer hover:text-pink-400"
+          size={28}
+        />
       ) : (
-        <FollowingIcon className="ml-4 text-pink-700 pointer" size={24} />
+        <FollowingIcon
+          onClick={() => {
+            followUnfollowFunction(user?.id, userData?._id, setCurrentUser);
+            setIsFollowing((e: any) => !e);
+          }}
+          className="ml-4 text-pink-700 cursor-pointer hover:text-blue-300"
+          size={28}
+        />
       )}
     </div>
   );
