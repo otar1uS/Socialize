@@ -11,6 +11,8 @@ import {
 import { formatDistanceToNow, isToday } from "date-fns";
 import { FaEdit } from "react-icons/fa";
 
+import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
+
 import {
   Avatar,
   AvatarFallback,
@@ -22,6 +24,9 @@ import { Post, User } from "@/TS/ActionTypes";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { CardsSkeleton } from "../shadcn-ui/skeletons";
 
 export const Cards = ({
   postData,
@@ -34,6 +39,36 @@ export const Cards = ({
 }) => {
   const router = useRouter();
 
+  const { user, isLoaded } = useUser();
+
+  const [savedPosts, setSavedPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [switcher, setSwitcher] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchSavedPosts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/user/${user?.id}`);
+
+        if (!response.ok) {
+          throw new Error(
+            `there is some http error about fetching saved posts `
+          );
+        }
+
+        const data = await response.json();
+
+        setSavedPosts(data.savedPosts);
+        setLoading(false);
+      } catch (error) {
+        console.error(`there is some http error about fetching saved posts `);
+      }
+    };
+
+    isLoaded && fetchSavedPosts();
+  }, [user, isLoaded, switcher]);
+
   const date: Date = new Date(String(postData?.createdAt));
   let formattedDate;
 
@@ -43,7 +78,32 @@ export const Cards = ({
     formattedDate = formatDistanceToNow(date, { addSuffix: true });
   }
 
-  return (
+  const savePostHandler = () => {
+    async function savePost() {
+      const response = await fetch(
+        `/api/user/${user?.id}/savedPosts/${postData?._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`something when wrong while trying to save post`);
+      }
+    }
+    savePost();
+  };
+
+  const isItSavedPost = savedPosts?.find(
+    (post) => post._id.toString() === postData._id.toString()
+  );
+
+  return loading ? (
+    <CardsSkeleton />
+  ) : (
     <div className="mb-14">
       <Card>
         <CardHeader className="flex justify-between ">
@@ -92,7 +152,27 @@ export const Cards = ({
                     postData?.creator?.lastName}
               </p>
             </div>
-            <div>
+            <div className="flex gap-4 flex-col items-center">
+              {switcher || isItSavedPost ? (
+                <IoBookmark
+                  size={30}
+                  className="cursor-pointer text-cyan"
+                  onClick={() => {
+                    savePostHandler();
+
+                    setSwitcher(false);
+                  }}
+                />
+              ) : (
+                <IoBookmarkOutline
+                  className="cursor-pointer text-pink-700"
+                  onClick={() => {
+                    savePostHandler();
+
+                    setSwitcher(true);
+                  }}
+                />
+              )}
               <p className="text-sm text-gray-400">{formattedDate}</p>
             </div>
           </CardTitle>

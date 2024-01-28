@@ -76,7 +76,7 @@ const UserCard = ({
         <FollowIcon
           onClick={() => {
             followUnfollowFunction(user?.id, userData?._id, setCurrentUser);
-            setIsFollowing((e: any) => !e);
+            setIsFollowing && setIsFollowing((e: any) => !e);
           }}
           className="ml-4 text-cyan cursor-pointer hover:text-pink-400"
           size={28}
@@ -85,7 +85,7 @@ const UserCard = ({
         <FollowingIcon
           onClick={() => {
             followUnfollowFunction(user?.id, userData?._id, setCurrentUser);
-            setIsFollowing((e: any) => !e);
+            setIsFollowing && setIsFollowing((e: any) => !e);
           }}
           className="ml-4 text-pink-700 cursor-pointer hover:text-blue-300"
           size={28}

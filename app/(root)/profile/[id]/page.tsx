@@ -8,14 +8,17 @@ import { User } from "@/TS/ActionTypes";
 import Loader from "@/components/Loader";
 import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
-import React, { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/shadcn-ui/button";
 import { Cards } from "@/components/layout/Cards";
 import UserCard from "@/components/layout/UserCard";
 import { followUnfollowFunction } from "@/components/forms/onFollow";
+import userFollowersState from "@/store/MainStore";
 
 const Profile = () => {
+  const { increaseFollowers, decreaseFollowers } = userFollowersState();
+
   const { user } = useUser();
   const { id } = useParams();
 
@@ -99,25 +102,28 @@ const Profile = () => {
               {user?.id !== userStats?.clerkId ? (
                 !isFollowing ? (
                   <FollowIcon
-                    onClick={() =>
+                    onClick={() => {
                       followUnfollowFunction(
                         user?.id,
                         userStats?._id,
                         setUsersNewStats
-                      )
-                    }
+                      );
+                      increaseFollowers();
+                    }}
                     className="ml-4 text-cyan cursor-pointer hover:text-pink-400"
                     size={28}
                   />
                 ) : (
                   <FollowingIcon
-                    onClick={() =>
+                    onClick={() => {
                       followUnfollowFunction(
                         user?.id,
                         userStats?._id,
                         setUsersNewStats
-                      )
-                    }
+                      );
+
+                      decreaseFollowers();
+                    }}
                     className="ml-4 text-pink-700 cursor-pointer hover:text-blue-300"
                     size={28}
                   />

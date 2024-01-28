@@ -15,12 +15,16 @@ import { useEffect, useState } from "react";
 
 import { ClerkUser } from "@/TS/ActionTypes";
 import { LeftSideBarSkeleton } from "../shadcn-ui/skeletons";
+import userFollowersState from "@/store/MainStore";
 
 const LeftSideBar = () => {
-  const { user, isLoaded } = useUser();
+  const { curUserFollowers } = userFollowersState();
+
+  const { user } = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [userData, setUserData] = useState<ClerkUser | any>();
+
   useEffect(() => {
     const getUserData = async () => {
       try {
@@ -43,8 +47,8 @@ const LeftSideBar = () => {
       }
     };
 
-    getUserData();
-  }, [user, userData]);
+    user && getUserData();
+  }, [user, curUserFollowers]);
 
   const userStats = [
     { number: userData?.posts?.length || "0", name: "Posts" },
