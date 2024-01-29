@@ -15,6 +15,8 @@ export const GET = async (req: Request, { params }: Params) => {
 
     return new Response(JSON.stringify(user), { status: 200 });
   } catch (e) {
+    console.log(e);
+    console.error(e);
     return new Response(`${e}  Failed to get user`, { status: 500 });
   }
 };
