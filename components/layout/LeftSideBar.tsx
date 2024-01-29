@@ -14,12 +14,9 @@ import { CiLogout as LogoutIcon } from "react-icons/ci";
 import { useEffect, useState } from "react";
 
 import { ClerkUser } from "@/TS/ActionTypes";
-import { LeftSideBarSkeleton } from "../shadcn-ui/skeletons";
-import userFollowersState from "@/store/MainStore";
+import { LeftSideBarSkeleton } from "../ui/skeletons";
 
 const LeftSideBar = () => {
-  const { curUserFollowers } = userFollowersState();
-
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -48,7 +45,7 @@ const LeftSideBar = () => {
     };
 
     user && getUserData();
-  }, [user, curUserFollowers]);
+  }, [user]);
 
   const userStats = [
     { number: userData?.posts?.length || "0", name: "Posts" },

@@ -68,9 +68,9 @@ export type User = {
   followers: string[];
   following: string[];
   lastName: string;
-  likedPosts: string[];
+  likedPosts: Post[];
   posts: Post[];
   profilePhoto: string;
-  savedPosts: string[];
+  savedPosts: Post[];
   username: string;
 };

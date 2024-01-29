@@ -11,7 +11,7 @@ import {
 
 import { FaEdit } from "react-icons/fa";
 
-import { Avatar, AvatarImage } from "../../components/shadcn-ui/avatar";
+import { Avatar, AvatarImage } from "../shadcn-ui/avatar";
 
 export const LeftSideBarSkeleton = () => {
   return (

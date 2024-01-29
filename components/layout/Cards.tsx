@@ -11,6 +11,8 @@ import {
 import { formatDistanceToNow, isToday } from "date-fns";
 import { FaEdit } from "react-icons/fa";
 
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 
 import {
@@ -23,10 +25,10 @@ import Image from "next/image";
 import { Post, User } from "@/TS/ActionTypes";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { CardsSkeleton } from "../shadcn-ui/skeletons";
+import { CardsSkeleton } from "../ui/skeletons";
 
 export const Cards = ({
   postData,
@@ -37,13 +39,16 @@ export const Cards = ({
   userInfo?: User;
   isItProfile?: boolean;
 }) => {
+  const pathname = usePathname();
+
   const router = useRouter();
 
   const { user, isLoaded } = useUser();
 
-  const [savedPosts, setSavedPosts] = useState<Post[]>([]);
+  const [Posts, setPosts] = useState<User>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [switcher, setSwitcher] = useState<boolean>(false);
+  const [switcher, setSwitcher] = useState(false) as any;
+  const [switcherLike, setSwitcherLike] = useState(false) as any;
 
   useEffect(() => {
     const fetchSavedPosts = async () => {
@@ -59,7 +64,7 @@ export const Cards = ({
 
         const data = await response.json();
 
-        setSavedPosts(data.savedPosts);
+        setPosts(data);
         setLoading(false);
       } catch (error) {
         console.error(`there is some http error about fetching saved posts `);
@@ -67,7 +72,7 @@ export const Cards = ({
     };
 
     isLoaded && fetchSavedPosts();
-  }, [user, isLoaded, switcher]);
+  }, [user, isLoaded]);
 
   const date: Date = new Date(String(postData?.createdAt));
   let formattedDate;
@@ -96,45 +101,66 @@ export const Cards = ({
     }
     savePost();
   };
+  const likePostHandler = () => {
+    async function likePost() {
+      const response = await fetch(
+        `/api/user/${user?.id}/likedPosts/${postData?._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-  const isItSavedPost = savedPosts?.find(
+      if (!response.ok) {
+        throw new Error(`something when wrong while trying to like post`);
+      }
+    }
+    likePost();
+  };
+
+  const isItSavedPost = Posts?.savedPosts.find(
     (post) => post._id.toString() === postData._id.toString()
   );
+
+  const isItLikedPost = Posts?.likedPosts?.find(
+    (post) => post._id.toString() === postData._id.toString()
+  );
+
+  useEffect(() => {
+    setSwitcher(isItSavedPost);
+    setSwitcherLike(isItLikedPost);
+  }, [isItSavedPost, isItLikedPost]);
+
+  if (pathname.split("/").includes("liked-posts") && !isItLikedPost)
+    return (
+      <h1 className="text-center mt-5  text-[14px]  sm:text-[16px]  xl:text-[20px] w-full text-cyan">
+        No liked posts yet
+      </h1>
+    );
+
+  if (pathname.split("/").includes("saved-posts") && !isItSavedPost)
+    return (
+      <h1 className="text-center mt-5  text-[14px]  sm:text-[16px]  xl:text-[20px] w-full text-cyan">
+        No saved posts yet
+      </h1>
+    );
 
   return loading ? (
     <CardsSkeleton />
   ) : (
-    <div className="mb-14">
-      <Card>
-        <CardHeader className="flex justify-between ">
-          <CardTitle className="flex justify-between items-center">
-            <div className="flex gap-2 items-center mb-2">
-              <Avatar>
-                <AvatarImage
-                  src={
-                    isItProfile
-                      ? userInfo?.profilePhoto
-                      : postData?.creator?.profilePhoto
-                  }
-                  onClick={() =>
-                    router.replace(
-                      `/profile/${
-                        isItProfile
-                          ? userInfo?.clerkId
-                          : postData?.creator.clerkId
-                      }`
-                    )
-                  }
-                  className="cursor-pointer"
-                />
-                <AvatarFallback>
-                  {isItProfile
-                    ? userInfo?.firstName.slice(0, 2).toUpperCase()
-                    : postData?.creator?.firstName.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <p
-                className="text-[20px] cursor-pointer"
+    <Card className="  min-w-[340px] max-w-xl mb-2">
+      <CardHeader className="flex justify-between ">
+        <CardTitle className="flex justify-between items-center">
+          <div className="flex gap-2 items-center mb-2">
+            <Avatar>
+              <AvatarImage
+                src={
+                  isItProfile
+                    ? userInfo?.profilePhoto
+                    : postData?.creator?.profilePhoto
+                }
                 onClick={() =>
                   router.replace(
                     `/profile/${
@@ -144,68 +170,106 @@ export const Cards = ({
                     }`
                   )
                 }
-              >
+                className="cursor-pointer"
+              />
+              <AvatarFallback>
                 {isItProfile
-                  ? userInfo?.firstName + " " + userInfo?.lastName
-                  : postData?.creator?.firstName +
-                    " " +
-                    postData?.creator?.lastName}
-              </p>
-            </div>
-            <div className="flex gap-4 flex-col items-center">
-              {switcher || isItSavedPost ? (
-                <IoBookmark
-                  size={30}
-                  className="cursor-pointer text-cyan"
-                  onClick={() => {
-                    savePostHandler();
-
-                    setSwitcher(false);
-                  }}
-                />
-              ) : (
-                <IoBookmarkOutline
-                  className="cursor-pointer text-pink-700"
-                  onClick={() => {
-                    savePostHandler();
-
-                    setSwitcher(true);
-                  }}
-                />
-              )}
-              <p className="text-sm text-gray-400">{formattedDate}</p>
-            </div>
-          </CardTitle>
-          <CardDescription>
-            <h2 className="text-[18px] font-[500] text-black leading-tight  ">
-              {postData?.caption}{" "}
-            </h2>
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex justify-start items-center">
-          <Image
-            src={postData ? postData.postPhoto : ""}
-            alt="beautiful picture"
-            width={500}
-            height={500}
-            className="w-full"
-          />
-        </CardContent>
-        <CardFooter>
-          <div className="flex justify-between items-center w-full">
-            <p className="text-cyan font-[700]">{postData?.tag}</p>
-            <Link
-              href={`/edit-post/${postData?._id}`}
-              className="flex gap-2 items-center cursor-pointer "
+                  ? userInfo?.firstName.slice(0, 2).toUpperCase()
+                  : postData?.creator?.firstName.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <p
+              className="text-[14px]  sm:text-[16px] xl:text-[20px] cursor-pointer"
+              onClick={() =>
+                router.replace(
+                  `/profile/${
+                    isItProfile ? userInfo?.clerkId : postData?.creator.clerkId
+                  }`
+                )
+              }
             >
-              <p className="text-[16px] text-gray-400 font-bold text-blue-800">
-                Edit
-              </p>
-              <FaEdit size={20} className="text-gray-400 text-blue-800" />
-            </Link>
+              {isItProfile
+                ? userInfo?.firstName + " " + userInfo?.lastName
+                : postData?.creator?.firstName +
+                  " " +
+                  postData?.creator?.lastName}
+            </p>
           </div>
-        </CardFooter>
-      </Card>
-    </div>
+          <div className="flex gap-4 flex-col items-center">
+            {switcher ? (
+              <IoBookmark
+                className="max-w-7   cursor-pointer text-cyan"
+                onClick={() => {
+                  savePostHandler();
+
+                  setSwitcher(false);
+                }}
+              />
+            ) : (
+              <IoBookmarkOutline
+                className="cursor-pointer max-w-7 text-pink-700"
+                onClick={() => {
+                  savePostHandler();
+                  setSwitcher(true);
+                }}
+              />
+            )}
+            <p className="text-sm text-gray-400">{formattedDate}</p>
+          </div>
+        </CardTitle>
+        <CardDescription>
+          <h2 className="text-[18px] font-[500] text-black leading-tight  ">
+            {postData?.caption}{" "}
+          </h2>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex justify-start items-center">
+        <Image
+          src={postData ? postData.postPhoto : ""}
+          alt="beautiful picture"
+          width={500}
+          height={500}
+          className=" max-w-full sm:w-full"
+        />
+      </CardContent>
+      <CardFooter>
+        <div className="flex justify-between items-start w-full">
+          <div className="flex flex-col items-start gap-3">
+            <p className="text-cyan font-[700]">{postData?.tag}</p>
+
+            {switcherLike ? (
+              <MdFavorite
+                size={28}
+                className="cursor-pointer text-cyan"
+                onClick={() => {
+                  likePostHandler();
+
+                  setSwitcherLike(false);
+                }}
+              />
+            ) : (
+              <MdFavoriteBorder
+                className="cursor-pointer text-pink-700"
+                size={28}
+                onClick={() => {
+                  likePostHandler();
+
+                  setSwitcherLike(true);
+                }}
+              />
+            )}
+          </div>
+          <Link
+            href={`/edit-post/${postData?._id}`}
+            className="flex gap-2 items-center cursor-pointer "
+          >
+            <p className="text-[16px] text-gray-400 font-bold text-blue-800">
+              Edit
+            </p>
+            <FaEdit size={20} className="text-gray-400 text-blue-800" />
+          </Link>
+        </div>
+      </CardFooter>
+    </Card>
   );
 };

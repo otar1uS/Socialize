@@ -2,7 +2,7 @@
 
 import { Post } from "@/TS/ActionTypes";
 import { Cards } from "@/components/layout/Cards";
-import { CardsSkeleton } from "@/components/shadcn-ui/skeletons";
+import { CardsSkeleton } from "@/components/ui/skeletons";
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
@@ -29,8 +29,8 @@ const Home = () => {
   return loading ? (
     <CardsSkeleton />
   ) : (
-    <div className="h-full  ">
-      {posts.map((post: Post) => (
+    <div className="flex flex-col gap-10">
+      {posts?.map((post: Post) => (
         <Cards key={post.caption} postData={post} />
       ))}
     </div>

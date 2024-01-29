@@ -7,7 +7,7 @@ import { CardsSkeleton } from "@/components/ui/skeletons";
 
 import React, { useEffect, useState } from "react";
 
-const SavedPosts = () => {
+const LikedPosts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -46,4 +46,4 @@ const SavedPosts = () => {
   );
 };
 
-export default SavedPosts;
+export default LikedPosts;

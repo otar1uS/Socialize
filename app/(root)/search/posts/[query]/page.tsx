@@ -3,7 +3,7 @@
 import { Post } from "@/TS/ActionTypes";
 import { Cards } from "@/components/layout/Cards";
 import { Button } from "@/components/shadcn-ui/button";
-import { CardsSkeleton } from "@/components/shadcn-ui/skeletons";
+import { CardsSkeleton } from "@/components/ui/skeletons";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";

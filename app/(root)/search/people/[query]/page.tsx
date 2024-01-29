@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "@/TS/ActionTypes";
-import Loader from "@/components/Loader";
+import Loader from "@/components/ui/Loader";
 import UserCard from "@/components/layout/UserCard";
 import { Button } from "@/components/shadcn-ui/button";
 import Link from "next/link";

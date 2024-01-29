@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
-import { Button } from "../ui/button";
+import { Button } from "../shadcn-ui/button";
 import { useUser } from "@clerk/nextjs";
 import { onSubmit } from "./onSubmit";
 import { useRouter } from "next/navigation";

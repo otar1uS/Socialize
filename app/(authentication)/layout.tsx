@@ -14,7 +14,7 @@ const authenticationLayout = ({ children }: { children: React.ReactNode }) => {
     <ClerkProvider afterSignInUrl="/" afterSignUpUrl="/">
       <html lang="en">
         <body
-          className={`${inter.className}  bg-black h-full flex items-center justify-center`}
+          className={`${inter.className} bg-black h-screen w-full flex items-center justify-center `}
         >
           {children}
         </body>

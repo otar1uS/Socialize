@@ -8,7 +8,7 @@ import { ClerkUser, User } from "@/TS/ActionTypes";
 import { useUser } from "@clerk/nextjs";
 
 import React, { useEffect, useState } from "react";
-import Loader from "../Loader";
+import Loader from "../ui/Loader";
 import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
 import { useRouter } from "next/navigation";
 import { followUnfollowFunction } from "../forms/onFollow";

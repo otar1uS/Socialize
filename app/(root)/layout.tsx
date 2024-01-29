@@ -5,8 +5,8 @@ import LeftSideBar from "@/components/layout/LeftSideBar";
 import MainContent from "@/components/layout/MainContent";
 import RightSideBar from "@/components/layout/RightSideBar";
 
-import BottomBar from "@/components/layout/BottomBar";
 import Wrapper from "@/components/layout/Wrapper";
+import BottomBar from "@/components/layout/BottomBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,18 +21,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Wrapper>
-      <html lang="en">
-        <body className={inter.className}>
-          <main className=" flex flex-row justify-center h-full bg-dark ">
+    <html lang="en">
+      <body className={inter.className}>
+        <Wrapper>
+          <main className=" flex flex-row h-full bg-black justify-center ">
             <LeftSideBar />
-
             <MainContent>{children}</MainContent>
             <RightSideBar />
           </main>
           <BottomBar />
-        </body>
-      </html>
-    </Wrapper>
+        </Wrapper>
+      </body>
+    </html>
   );
 }
