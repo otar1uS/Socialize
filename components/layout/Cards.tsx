@@ -30,6 +30,8 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { CardsSkeleton } from "../ui/skeletons";
 
+import { ImBin as DeleteIcon } from "react-icons/im";
+
 export const Cards = ({
   postData,
   userInfo,
@@ -103,6 +105,7 @@ export const Cards = ({
   };
   const likePostHandler = () => {
     async function likePost() {
+      console.log(`/api/user/${user?.id}/likedPosts/${postData?._id}`);
       const response = await fetch(
         `/api/user/${user?.id}/likedPosts/${postData?._id}`,
         {
@@ -118,6 +121,27 @@ export const Cards = ({
       }
     }
     likePost();
+  };
+
+  const deletePostHandler = () => {
+    async function deletePost() {
+      console.log(`/api/user/${user?.id}/likedPosts/${Posts?._id}`);
+
+      try {
+        await fetch(`/api/posts/${postData?._id}/${userInfo?._id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (error) {
+        console.log(
+          `something went wrong while trying to delete post ${error}`
+        );
+      }
+    }
+
+    deletePost();
   };
 
   const isItSavedPost = Posts?.savedPosts.find(
@@ -259,15 +283,26 @@ export const Cards = ({
               />
             )}
           </div>
-          <Link
-            href={`/edit-post/${postData?._id}`}
-            className="flex gap-2 items-center cursor-pointer "
-          >
-            <p className="text-[16px] text-gray-400 font-bold text-blue-800">
-              Edit
-            </p>
-            <FaEdit size={20} className="text-gray-400 text-blue-800" />
-          </Link>
+          <div className="flex flex-col gap-5 items-start">
+            <div
+              onClick={deletePostHandler}
+              className="flex gap-2 items-center cursor-pointer "
+            >
+              <p className="text-[16px] text-gray-400 font-bold text-red-800">
+                Delete
+              </p>
+              <DeleteIcon size={20} className="text-gray-400 text-red-800" />
+            </div>
+            <Link
+              href={`/edit-post/${postData?._id}`}
+              className="flex gap-2 items-center cursor-pointer "
+            >
+              <p className="text-[16px] text-gray-400 font-bold text-blue-800">
+                Edit
+              </p>
+              <FaEdit size={20} className="text-gray-400 text-blue-800" />
+            </Link>
+          </div>
         </div>
       </CardFooter>
     </Card>

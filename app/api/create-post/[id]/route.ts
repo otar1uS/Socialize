@@ -2,11 +2,8 @@ import Post from "@/lib/models/Post";
 import User from "@/lib/models/User";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
 import { writeFile } from "fs/promises";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import path from "path";
-
-type Params = {
-  params: { id: string };
-};
 
 export const POST = async (req: Request, { params }: Params) => {
   const currentWorkingDirectory = process.cwd();
@@ -40,6 +37,7 @@ export const POST = async (req: Request, { params }: Params) => {
     await connectToDataBase();
 
     const user = await User.findOne({ clerkId: id });
+
     if (!user) {
       return new Response("User not found", { status: 404 });
     }
@@ -61,6 +59,7 @@ export const POST = async (req: Request, { params }: Params) => {
 
     return new Response("Post was created successfully", { status: 200 });
   } catch (e) {
+    console.error(e);
     return new Response(` Failed to create post ${e}`, {
       status: 500,
     });

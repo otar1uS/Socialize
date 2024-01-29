@@ -97,7 +97,9 @@ export async function onSubmit(
             method: "POST",
             body: formData,
           }
-        );
+        ).catch((error) => {
+          console.error("Error:", error);
+        });
 
         router.push("/");
       }
