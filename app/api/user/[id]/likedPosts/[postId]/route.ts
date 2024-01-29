@@ -16,7 +16,7 @@ export const POST = async (req: Request, { params }: Params) => {
 
     const post = await Post.findById(postId).populate("creator likes").exec();
 
-    const isLiked = user.likedPosts.find(
+    const isLiked = user?.likedPosts.find(
       (post: PostTypes) => post._id.toString() === postId
     );
     if (isLiked) {
