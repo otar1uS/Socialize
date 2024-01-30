@@ -3,28 +3,17 @@
 import { Post } from "@/TS/ActionTypes";
 import { Cards } from "@/components/layout/Cards";
 import { CardsSkeleton } from "@/components/ui/skeletons";
-import React, { useEffect, useState } from "react";
+import usePostState from "@/store/PostsStore";
+import { useEffect } from "react";
 
 const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const posts = usePostState((state) => state.posts);
+  const loading = usePostState((state) => state.loading);
+  const allPosts = usePostState((state) => state.allPostsFetcher);
 
   useEffect(() => {
-    async function fetchingData() {
-      setLoading(true);
-      try {
-        const responsePosts = await fetch("/api/posts");
-
-        const postsData = await responsePosts.json();
-
-        setPosts(postsData);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    fetchingData();
-  }, []);
+    allPosts();
+  }, [allPosts]);
 
   return loading ? (
     <CardsSkeleton />

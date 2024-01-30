@@ -11,41 +11,25 @@ import SidebarNavigation from "../NavLinks/SidebarNavigation";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
 import { CiLogout as LogoutIcon } from "react-icons/ci";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { ClerkUser } from "@/TS/ActionTypes";
+import { User } from "@/TS/ActionTypes";
 import { LeftSideBarSkeleton } from "../ui/skeletons";
+import useUserState from "@/store/UserStore";
 
 const LeftSideBar = () => {
   const { user } = useUser();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [userData, setUserData] = useState<ClerkUser | any>();
+  const getAllUsers = useUserState((state) => state.fetchAllTheUserData);
+
+  const userData = useUserState((state) =>
+    state.Users.find((u: User) => u.clerkId === user?.id)
+  );
+  const isLoading = useUserState((state) => state.loading);
 
   useEffect(() => {
-    const getUserData = async () => {
-      try {
-        setIsLoading(true);
-
-        if (user && user.id) {
-          const response = await fetch(`/api/user/${user.id}`);
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const data = await response.json();
-          setUserData(data);
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Fetch request failed:", error);
-      }
-    };
-
-    user && getUserData();
-  }, [user]);
+    getAllUsers();
+  }, [getAllUsers]);
 
   const userStats = [
     { number: userData?.posts?.length || "0", name: "Posts" },

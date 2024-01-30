@@ -5,36 +5,27 @@ import Loader from "@/components/ui/Loader";
 import UserCard from "@/components/layout/UserCard";
 import { useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
+import useUserState from "@/store/UserStore";
 
 const People = () => {
   const { user } = useUser();
-  const [people, setPeople] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const getAllUsers = useUserState((state) => state.fetchAllTheUserData);
+  const isLoading = useUserState((state) => state.loading);
+
+  const people = useUserState((state) =>
+    state.Users.filter((person: User) => person.clerkId !== user?.id)
+  );
 
   useEffect(() => {
-    const fetchPeople = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/user`);
+    getAllUsers();
+  }, [getAllUsers]);
 
-        if (!response.ok) {
-          throw new Error(`there is some http error about fetching people `);
-        }
-
-        const data = await response.json();
-
-        const newDate = data.filter(
-          (person: User) => person.clerkId !== user?.id
-        );
-
-        setPeople(newDate);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Fetch people request failed");
-      }
-    };
-    user && fetchPeople();
-  }, [user]);
+  if (!people)
+    return (
+      <h1 className="text-cyan text-[16px] text-center">
+        Could not find any User
+      </h1>
+    );
 
   return isLoading ? (
     <Loader />

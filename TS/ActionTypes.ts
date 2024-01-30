@@ -65,8 +65,8 @@ export type User = {
   createdAt: string;
   email: string;
   firstName: string;
-  followers: string[];
-  following: string[];
+  followers: User[];
+  following: User[];
   lastName: string;
   likedPosts: Post[];
   posts: Post[];

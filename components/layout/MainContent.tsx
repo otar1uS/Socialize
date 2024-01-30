@@ -68,7 +68,7 @@ const MainContent = ({ children }: MainContentProps) => {
           </SignedIn>
         </div>
       </div>
-      <div className="h-full overflow-scroll  overflow-y-hidden overflow:bg-gray mt-2  overflow-x-hidden w-full max-w-xl px-4 md:px-8 xl:px-18 ">
+      <div className="h-full overflow-scroll  overflow-y-hidden overflow:bg-gray mt-2  overflow-x-hidden w-full max-w-2xl px-4 md:px-8 xl:px-18 ">
         <h1 className="text-2xl  self-start font-bold    mb-3">{title}</h1>
         {children}
       </div>

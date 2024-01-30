@@ -31,6 +31,7 @@ import { useUser } from "@clerk/nextjs";
 import { CardsSkeleton } from "../ui/skeletons";
 
 import { ImBin as DeleteIcon } from "react-icons/im";
+import usePostState from "@/store/PostsStore";
 
 export const Cards = ({
   postData,
@@ -41,6 +42,8 @@ export const Cards = ({
   userInfo?: User;
   isItProfile?: boolean;
 }) => {
+  const { posts, postHandler, deletePost } = usePostState((state) => state);
+
   const pathname = usePathname();
 
   const router = useRouter();
@@ -85,64 +88,9 @@ export const Cards = ({
     formattedDate = formatDistanceToNow(date, { addSuffix: true });
   }
 
-  const savePostHandler = () => {
-    async function savePost() {
-      const response = await fetch(
-        `/api/user/${user?.id}/savedPosts/${postData?._id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`something when wrong while trying to save post`);
-      }
-    }
-    savePost();
-  };
-  const likePostHandler = () => {
-    async function likePost() {
-      console.log(`/api/user/${user?.id}/likedPosts/${postData?._id}`);
-      const response = await fetch(
-        `/api/user/${user?.id}/likedPosts/${postData?._id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`something when wrong while trying to like post`);
-      }
-    }
-    likePost();
-  };
-
-  const deletePostHandler = () => {
-    async function deletePost() {
-      console.log(`/api/user/${user?.id}/likedPosts/${Posts?._id}`);
-
-      try {
-        await fetch(`/api/posts/${postData?._id}/${userInfo?._id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-      } catch (error) {
-        console.log(
-          `something went wrong while trying to delete post ${error}`
-        );
-      }
-    }
-
-    deletePost();
-  };
+  const savePostUrl = `/api/user/${user?.id}/savedPosts/${postData?._id}`;
+  const likePostUrl = `/api/user/${user?.id}/likedPosts/${postData?._id}`;
+  const deletePostUrl = `/api/posts/${postData?._id}/${postData?.creator?._id}`;
 
   const isItSavedPost = Posts?.savedPosts.find(
     (post) => post._id.toString() === postData._id.toString()
@@ -157,17 +105,13 @@ export const Cards = ({
     setSwitcherLike(isItLikedPost);
   }, [isItSavedPost, isItLikedPost]);
 
-  if (pathname.split("/").includes("liked-posts") && !isItLikedPost)
+  if (
+    (pathname.split("/").includes("saved-posts") && !isItSavedPost) ||
+    (pathname.split("/").includes("liked-posts") && !isItLikedPost)
+  )
     return (
       <h1 className="text-center mt-5  text-[14px]  sm:text-[16px]  xl:text-[20px] w-full text-cyan">
-        No liked posts yet
-      </h1>
-    );
-
-  if (pathname.split("/").includes("saved-posts") && !isItSavedPost)
-    return (
-      <h1 className="text-center mt-5  text-[14px]  sm:text-[16px]  xl:text-[20px] w-full text-cyan">
-        No saved posts yet
+        {!isItSavedPost ? "No saved posts yet" : "No liked posts yet"}
       </h1>
     );
 
@@ -224,7 +168,7 @@ export const Cards = ({
               <IoBookmark
                 className="max-w-7   cursor-pointer text-cyan"
                 onClick={() => {
-                  savePostHandler();
+                  postHandler(savePostUrl, "POST");
 
                   setSwitcher(false);
                 }}
@@ -233,7 +177,8 @@ export const Cards = ({
               <IoBookmarkOutline
                 className="cursor-pointer max-w-7 text-pink-700"
                 onClick={() => {
-                  savePostHandler();
+                  postHandler(savePostUrl, "POST");
+
                   setSwitcher(true);
                 }}
               />
@@ -266,7 +211,7 @@ export const Cards = ({
                 size={28}
                 className="cursor-pointer text-cyan"
                 onClick={() => {
-                  likePostHandler();
+                  postHandler(likePostUrl, "POST");
 
                   setSwitcherLike(false);
                 }}
@@ -276,7 +221,7 @@ export const Cards = ({
                 className="cursor-pointer text-pink-700"
                 size={28}
                 onClick={() => {
-                  likePostHandler();
+                  postHandler(likePostUrl, "POST");
 
                   setSwitcherLike(true);
                 }}
@@ -285,7 +230,7 @@ export const Cards = ({
           </div>
           <div className="flex flex-col gap-5 items-start">
             <div
-              onClick={deletePostHandler}
+              onClick={() => postHandler(deletePostUrl, "DELETE")}
               className="flex gap-2 items-center cursor-pointer "
             >
               <p className="text-[16px] text-gray-400 font-bold text-red-800">

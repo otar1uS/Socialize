@@ -2,35 +2,16 @@
 
 import { Post } from "@/TS/ActionTypes";
 import FormPostEditing from "@/components/forms/FormPostEditing";
+import usePostState from "@/store/PostsStore";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const EditPost = () => {
   const { id } = useParams<{ id: string }>();
 
-  const [currentPost, setCurrentPost] = useState<Post | any>({});
-
-
-  
-
-  useEffect(() => {
-    const fetchingPostInfo = async () => {
-      try {
-        const response = await fetch(`/api/posts/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        setCurrentPost(data);
-      } catch (err) {
-        console.log("post cant be fetched");
-      }
-    };
-
-    fetchingPostInfo();
-  }, [id]);
+  const currentPost = usePostState((state) =>
+    state.posts.find((post) => post._id.toString() === id)
+  );
 
   return (
     <div className="h-screen">

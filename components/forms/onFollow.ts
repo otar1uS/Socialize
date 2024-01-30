@@ -1,10 +1,6 @@
-import { User } from "@/TS/ActionTypes";
-import { SetStateAction } from "react";
-
 export const followUnfollowFunction = async (
   userId: string | undefined,
-  whoToFollowId: string | undefined,
-  setUserStats: SetStateAction<any>
+  whoToFollowId: string | undefined
 ) => {
   try {
     const response = await fetch(
@@ -20,9 +16,6 @@ export const followUnfollowFunction = async (
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
-    const data = await response.json();
-    setUserStats(data);
   } catch (error) {
     console.error("Fetch request failed:", error);
   }
