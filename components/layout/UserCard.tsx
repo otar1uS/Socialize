@@ -4,14 +4,15 @@ import {
   SlUserFollowing as FollowingIcon,
 } from "react-icons/sl";
 
-import { ClerkUser, User } from "@/TS/ActionTypes";
+import { User } from "@/TS/ActionTypes";
 import { useUser } from "@clerk/nextjs";
 
 import React, { useEffect, useState } from "react";
-import Loader from "../ui/Loader";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
 import { useRouter } from "next/navigation";
 import { followUnfollowFunction } from "../forms/onFollow";
+import useUserState from "@/store/UserStore";
 
 const UserCard = ({
   userData,
@@ -20,40 +21,16 @@ const UserCard = ({
   userData: User;
   setIsFollowing?: any;
 }) => {
-  const { user, isLoaded } = useUser();
-
+  const { user } = useUser();
   const router = useRouter();
 
-  const [currentUser, setCurrentUser] = useState<ClerkUser | any>({});
-  const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/user/${user?.id}`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setCurrentUser(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Fetch request failed:", error);
-      }
-    };
-    user && getUserData();
-  }, [user]);
-
-  const isFollowing = currentUser?.following?.find(
-    (curU: any) => curU._id === userData._id
+  const userStats = useUserState((state) =>
+    state.Users.find((u: User) => u.clerkId === user?.id)
   );
 
-  return loading ? (
-    <Loader />
-  ) : (
+  const handleFollowing = useUserState((state) => state.handleFollowing);
+
+  return (
     <div className="flex items-center gap-4 p-3 bg-gray rounded-lg ">
       <Avatar>
         <AvatarImage
@@ -72,11 +49,12 @@ const UserCard = ({
         {userData.firstName + " " + userData.lastName}
       </p>
 
-      {user?.id === userData.clerkId ? null : !isFollowing ? (
+      {user?.id === userData.clerkId ? null : !setIsFollowing ? (
         <FollowIcon
           onClick={() => {
-            followUnfollowFunction(user?.id, userData?._id, setCurrentUser);
-            setIsFollowing && setIsFollowing((e: any) => !e);
+            followUnfollowFunction(user?.id, userData?._id);
+
+            userStats && handleFollowing(userStats, userData);
           }}
           className="ml-4 text-cyan cursor-pointer hover:text-pink-400"
           size={28}
@@ -84,8 +62,8 @@ const UserCard = ({
       ) : (
         <FollowingIcon
           onClick={() => {
-            followUnfollowFunction(user?.id, userData?._id, setCurrentUser);
-            setIsFollowing && setIsFollowing((e: any) => !e);
+            followUnfollowFunction(user?.id, userData?._id);
+            userStats && handleFollowing(userStats, userData);
           }}
           className="ml-4 text-pink-700 cursor-pointer hover:text-blue-300"
           size={28}

@@ -15,6 +15,8 @@ export interface ClerkUser {
   posts: string[];
   following: string[];
   followers: string[];
+  savedPosts: string[];
+  likedPosts: string[];
   clerkId: string;
 
   profilePhoto?: string;
@@ -54,6 +56,7 @@ export type Post = {
   postPhoto: string;
   tag: string;
   likes: string[];
+
   createdAt: DateObject;
   __v: number;
 };

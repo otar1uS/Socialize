@@ -8,6 +8,9 @@ interface postState {
   post: Post;
   loading: boolean;
 
+  switcher: boolean;
+  switcherLike: boolean;
+
   getOnePostById: (postId: string) => void;
   getPostsById: (postId: string) => void;
   allPostsFetcher: () => Promise<void>;
@@ -19,6 +22,8 @@ const usePostState = create<postState>((set) => ({
   posts: [],
   post: {} as Post,
   loading: false,
+  switcher: false,
+  switcherLike: false,
   //! async functions------
 
   //! fetching all posts
@@ -53,6 +58,14 @@ const usePostState = create<postState>((set) => ({
     if (!response.ok) {
       throw new Error(`something when wrong while trying to ${method} post`);
     }
+
+    if (method === "POST") {
+      if (url.split("/").includes("savedPosts")) {
+        set((state) => ({ ...state, switcher: !state.switcher }));
+      } else {
+        set((state) => ({ ...state, switcherLike: !state.switcherLike }));
+      }
+    }
   },
 
   // !none async functions------
@@ -76,9 +89,12 @@ const usePostState = create<postState>((set) => ({
 
   //!delete post
   deletePost: (postId: string) =>
-    set((state) => ({
-      posts: state.posts.filter((post) => post._id.toString() !== postId),
-    })),
+    set((state) => {
+      const updatedPosts = state.posts.filter(
+        (post) => post._id.toString() !== postId
+      );
+      return { ...state, posts: updatedPosts };
+    }),
 }));
 
 export default usePostState;

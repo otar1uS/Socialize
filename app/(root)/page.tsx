@@ -12,8 +12,14 @@ const Home = () => {
   const allPosts = usePostState((state) => state.allPostsFetcher);
 
   useEffect(() => {
-    allPosts();
+    const fetchData = async () => {
+      await allPosts();
+    };
+
+    fetchData();
   }, [allPosts]);
+
+  console.log(posts);
 
   return loading ? (
     <CardsSkeleton />

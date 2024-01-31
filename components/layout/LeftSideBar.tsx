@@ -25,6 +25,8 @@ const LeftSideBar = () => {
   const userData = useUserState((state) =>
     state.Users.find((u: User) => u.clerkId === user?.id)
   );
+
+  const allUsers = useUserState((state) => state.Users);
   const isLoading = useUserState((state) => state.loading);
 
   useEffect(() => {

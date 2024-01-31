@@ -42,42 +42,20 @@ export const Cards = ({
   userInfo?: User;
   isItProfile?: boolean;
 }) => {
-  const { posts, postHandler, deletePost } = usePostState((state) => state);
+  //posts states
+  const posts = usePostState((state) => state.posts);
+  const deletePost = usePostState((state) => state.deletePost);
+  const postHandler = usePostState((state) => state.postHandler);
+  const switcher = usePostState((state) => state.switcher);
+  const switcherLike = usePostState((state) => state.switcherLike);
+
+  console.log("s");
 
   const pathname = usePathname();
 
   const router = useRouter();
 
   const { user, isLoaded } = useUser();
-
-  const [Posts, setPosts] = useState<User>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [switcher, setSwitcher] = useState(false) as any;
-  const [switcherLike, setSwitcherLike] = useState(false) as any;
-
-  useEffect(() => {
-    const fetchSavedPosts = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/user/${user?.id}`);
-
-        if (!response.ok) {
-          throw new Error(
-            `there is some http error about fetching saved posts `
-          );
-        }
-
-        const data = await response.json();
-
-        setPosts(data);
-        setLoading(false);
-      } catch (error) {
-        console.error(`there is some http error about fetching saved posts `);
-      }
-    };
-
-    isLoaded && fetchSavedPosts();
-  }, [user, isLoaded]);
 
   const date: Date = new Date(String(postData?.createdAt));
   let formattedDate;
@@ -92,18 +70,13 @@ export const Cards = ({
   const likePostUrl = `/api/user/${user?.id}/likedPosts/${postData?._id}`;
   const deletePostUrl = `/api/posts/${postData?._id}/${postData?.creator?._id}`;
 
-  const isItSavedPost = Posts?.savedPosts.find(
-    (post) => post._id.toString() === postData._id.toString()
+  const isItSavedPost = posts.map((u) =>
+    u.creator.savedPosts.find((post) => post === postData._id.toString())
   );
 
-  const isItLikedPost = Posts?.likedPosts?.find(
-    (post) => post._id.toString() === postData._id.toString()
+  const isItLikedPost = posts.map((u) =>
+    u.creator.likedPosts.find((post) => post === postData._id.toString())
   );
-
-  useEffect(() => {
-    setSwitcher(isItSavedPost);
-    setSwitcherLike(isItLikedPost);
-  }, [isItSavedPost, isItLikedPost]);
 
   if (
     (pathname.split("/").includes("saved-posts") && !isItSavedPost) ||
@@ -115,9 +88,7 @@ export const Cards = ({
       </h1>
     );
 
-  return loading ? (
-    <CardsSkeleton />
-  ) : (
+  return (
     <Card className="  min-w-[340px] max-w-xl mb-2">
       <CardHeader className="flex justify-between ">
         <CardTitle className="flex justify-between items-center">
@@ -169,8 +140,6 @@ export const Cards = ({
                 className="max-w-7   cursor-pointer text-cyan"
                 onClick={() => {
                   postHandler(savePostUrl, "POST");
-
-                  setSwitcher(false);
                 }}
               />
             ) : (
@@ -178,8 +147,6 @@ export const Cards = ({
                 className="cursor-pointer max-w-7 text-pink-700"
                 onClick={() => {
                   postHandler(savePostUrl, "POST");
-
-                  setSwitcher(true);
                 }}
               />
             )}
@@ -212,8 +179,6 @@ export const Cards = ({
                 className="cursor-pointer text-cyan"
                 onClick={() => {
                   postHandler(likePostUrl, "POST");
-
-                  setSwitcherLike(false);
                 }}
               />
             ) : (
@@ -222,8 +187,6 @@ export const Cards = ({
                 size={28}
                 onClick={() => {
                   postHandler(likePostUrl, "POST");
-
-                  setSwitcherLike(true);
                 }}
               />
             )}
