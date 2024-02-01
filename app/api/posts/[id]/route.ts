@@ -9,7 +9,7 @@ export const GET = async (req: Request, { params }: Params) => {
     await connectToDataBase();
 
     const post = await Post.findById(params.id)
-      .populate("likes creator")
+      .populate("likes creator comments.user")
       .exec();
 
     return new Response(JSON.stringify(post), { status: 200 });
@@ -19,5 +19,3 @@ export const GET = async (req: Request, { params }: Params) => {
     return new Response("Fail to get post by id", { status: 500 });
   }
 };
-
-

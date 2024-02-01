@@ -14,7 +14,9 @@ export const POST = async (req: Request, { params }: Params) => {
       .populate("following followers savedPosts likedPosts posts")
       .exec();
 
-    const post = await Post.findById(postId).populate("creator likes").exec();
+    const post = await Post.findById(postId)
+      .populate("creator likes comments.user")
+      .exec();
 
     const isLiked = user?.likedPosts.find(
       (post: PostTypes) => post._id.toString() === postId

@@ -23,3 +23,4 @@ export const DELETE = async (req: Response, { params }: Params) => {
     return new Response("Failed to delete the post", { status: 500 });
   }
 };
+

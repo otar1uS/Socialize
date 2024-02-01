@@ -49,6 +49,14 @@ type DateObject = {
   $date: string;
 };
 
+type postComments = {
+  _id: ObjectId;
+  text: string;
+  user: ClerkUser;
+  date: DateObject;
+  replies: postComments[];
+};
+
 export type Post = {
   _id: ObjectId;
   creator: ClerkUser;
@@ -56,6 +64,7 @@ export type Post = {
   postPhoto: string;
   tag: string;
   likes: string[];
+  comments: postComments[];
 
   createdAt: DateObject;
   __v: number;

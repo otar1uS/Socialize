@@ -5,10 +5,12 @@ export const GET = async () => {
   try {
     await connectToDataBase();
 
-    const posts = await Post.find({}).populate("likes creator").exec();
+    const posts = await Post.find({}).populate("likes creator comments").exec();
 
+    console.log(posts);
     return new Response(JSON.stringify(posts), { status: 200 });
   } catch (e) {
+    console.log(e);
     return new Response(`${e}  Failed to get posts`, { status: 500 });
   }
 };

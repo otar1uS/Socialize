@@ -1,6 +1,7 @@
 "use client";
 
 import { Post } from "@/TS/ActionTypes";
+
 import { create } from "zustand";
 
 interface postState {
@@ -14,7 +15,11 @@ interface postState {
   getOnePostById: (postId: string) => void;
   getPostsById: (postId: string) => void;
   allPostsFetcher: () => Promise<void>;
-  postHandler: (url: string, method: string) => Promise<void>;
+  postHandler: (
+    url: string,
+    method: string,
+    body?: { text: string }
+  ) => Promise<void>;
   deletePost: (postId: string) => void;
 }
 
@@ -33,6 +38,8 @@ const usePostState = create<postState>((set) => ({
     try {
       const response = await fetch("/api/posts");
 
+      console.log(response);
+
       if (!response.ok) {
         throw new Error("something went wrong while fetching all posts");
       }
@@ -47,12 +54,13 @@ const usePostState = create<postState>((set) => ({
 
   //! handling post actions
 
-  postHandler: async (url, method) => {
+  postHandler: async (url, method, body) => {
     const response = await fetch(url, {
       method: method,
       headers: {
         "Content-Type": "application/json",
       },
+      body: body as unknown as BodyInit,
     });
 
     if (!response.ok) {

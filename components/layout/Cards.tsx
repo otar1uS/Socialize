@@ -10,28 +10,22 @@ import {
 } from "@/components/shadcn-ui/card";
 import { formatDistanceToNow, isToday } from "date-fns";
 import { FaEdit } from "react-icons/fa";
-
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
-
+import { FaRegComment } from "react-icons/fa";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "../../components/shadcn-ui/avatar";
-
 import Image from "next/image";
 import { Post, User } from "@/TS/ActionTypes";
-
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { CardsSkeleton } from "../ui/skeletons";
-
 import { ImBin as DeleteIcon } from "react-icons/im";
 import usePostState from "@/store/PostsStore";
+import Comments from "./Comments";
 
 export const Cards = ({
   postData,
@@ -48,8 +42,6 @@ export const Cards = ({
   const postHandler = usePostState((state) => state.postHandler);
   const switcher = usePostState((state) => state.switcher);
   const switcherLike = usePostState((state) => state.switcherLike);
-
-  console.log("s");
 
   const pathname = usePathname();
 
@@ -89,7 +81,7 @@ export const Cards = ({
     );
 
   return (
-    <Card className="  min-w-[340px] max-w-xl mb-2">
+    <Card className="  min-w-[340px] max-w-xl mb-2 bg-[#181A1B]">
       <CardHeader className="flex justify-between ">
         <CardTitle className="flex justify-between items-center">
           <div className="flex gap-2 items-center mb-2">
@@ -118,7 +110,7 @@ export const Cards = ({
               </AvatarFallback>
             </Avatar>
             <p
-              className="text-[14px]  sm:text-[16px] xl:text-[20px] cursor-pointer"
+              className="text-[14px]  sm:text-[16px] xl:text-[20px] text-slate-200 cursor-pointer"
               onClick={() =>
                 router.replace(
                   `/profile/${
@@ -144,17 +136,17 @@ export const Cards = ({
               />
             ) : (
               <IoBookmarkOutline
-                className="cursor-pointer max-w-7 text-pink-700"
+                className="cursor-pointer max-w-7 text-slate-200 hover:text-pink-700"
                 onClick={() => {
                   postHandler(savePostUrl, "POST");
                 }}
               />
             )}
-            <p className="text-sm text-gray-400">{formattedDate}</p>
+            <p className="text-sm text-slate-200">{formattedDate}</p>
           </div>
         </CardTitle>
         <CardDescription>
-          <h2 className="text-[18px] font-[500] text-black leading-tight  ">
+          <h2 className="text-[18px] font-[500] text-slate-200 leading-tight  ">
             {postData?.caption}{" "}
           </h2>
         </CardDescription>
@@ -168,50 +160,59 @@ export const Cards = ({
           className=" max-w-full sm:w-full"
         />
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex-col items-start gap-2">
+        <p className="text-cyan font-[700] ">{postData?.tag}</p>
         <div className="flex justify-between items-start w-full">
-          <div className="flex flex-col items-start gap-3">
-            <p className="text-cyan font-[700]">{postData?.tag}</p>
-
+          <div className="flex  items-center  ">
             {switcherLike ? (
-              <MdFavorite
-                size={28}
-                className="cursor-pointer text-cyan"
-                onClick={() => {
-                  postHandler(likePostUrl, "POST");
-                }}
-              />
+              <div className="flex  items-center  cursor-pointer text-cyan  ">
+                <MdFavorite
+                  size={28}
+                  onClick={() => {
+                    postHandler(likePostUrl, "POST");
+                  }}
+                />
+                <p>0</p>
+              </div>
             ) : (
-              <MdFavoriteBorder
-                className="cursor-pointer text-pink-700"
-                size={28}
-                onClick={() => {
-                  postHandler(likePostUrl, "POST");
-                }}
-              />
+              <div className="flex  items-center text-slate-200 cursor-pointer hover:text-pink-700  ">
+                <MdFavoriteBorder
+                  size={28}
+                  onClick={() => {
+                    postHandler(likePostUrl, "POST");
+                  }}
+                />
+                <p>0</p>
+              </div>
             )}
           </div>
-          <div className="flex flex-col gap-5 items-start">
-            <div
-              onClick={() => postHandler(deletePostUrl, "DELETE")}
-              className="flex gap-2 items-center cursor-pointer "
-            >
-              <p className="text-[16px] text-gray-400 font-bold text-red-800">
-                Delete
-              </p>
-              <DeleteIcon size={20} className="text-gray-400 text-red-800" />
+          <div className="flex  gap-5 items-start">
+            {postData?.creator?.clerkId === user?.id && (
+              <>
+                <div
+                  onClick={() => {
+                    postHandler(deletePostUrl, "DELETE");
+                    deletePost(postData?._id.toString());
+                  }}
+                  className="flex gap-2 items-center cursor-pointer  text-slate-200 hover:text-pink-800"
+                >
+                  <DeleteIcon size={20} />
+                </div>
+                <Link
+                  href={`/edit-post/${postData?._id}`}
+                  className="flex gap-2 items-center cursor-pointer  text-slate-200 hover:text-cyan"
+                >
+                  <FaEdit size={20} />
+                </Link>
+              </>
+            )}
+            <div className="flex gap-1 items-center text-slate-200 hover:text-cyan cursor-pointer">
+              <FaRegComment size={20} />
+              <p>0</p>
             </div>
-            <Link
-              href={`/edit-post/${postData?._id}`}
-              className="flex gap-2 items-center cursor-pointer "
-            >
-              <p className="text-[16px] text-gray-400 font-bold text-blue-800">
-                Edit
-              </p>
-              <FaEdit size={20} className="text-gray-400 text-blue-800" />
-            </Link>
           </div>
         </div>
+        <Comments post={postData} />
       </CardFooter>
     </Card>
   );
