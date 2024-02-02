@@ -1,15 +1,16 @@
 "use client";
 
 import { Post } from "@/TS/ActionTypes";
-import { Cards } from "@/components/layout/Cards";
+import { Cards } from "@/components/cards/Cards";
 import { CardsSkeleton } from "@/components/ui/skeletons";
-import usePostState from "@/store/PostsStore";
+import { useAllPostsFetcher, useLoading, usePosts } from "@/store/PostsStore";
+
 import { useEffect } from "react";
 
 const Home = () => {
-  const posts = usePostState((state) => state.posts);
-  const loading = usePostState((state) => state.loading);
-  const allPosts = usePostState((state) => state.allPostsFetcher);
+  const posts = usePosts();
+  const loading = useLoading();
+  const allPosts = useAllPostsFetcher();
 
   useEffect(() => {
     const fetchData = async () => {

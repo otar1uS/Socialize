@@ -3,7 +3,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Messages } from "../ui/Messages";
 import useUserState from "@/store/UserStore";
-import UserCard from "./UserCard";
+import UserCard from "../cards/UserCard";
 
 const RightSideBar = () => {
   const { user } = useUser();

@@ -1,14 +1,8 @@
 "use client";
-import {
-  SlUserFollow as FollowIcon,
-  SlUserFollowing as FollowingIcon,
-} from "react-icons/sl";
 
 import { User } from "@/TS/ActionTypes";
 import { useUser } from "@clerk/nextjs";
-
-import React, { useEffect, useState } from "react";
-
+import { FollowIcon, FollowingIcon } from "@/lib/Utilities/IconsStore";
 import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
 import { useRouter } from "next/navigation";
 import { followUnfollowFunction } from "../forms/onFollow";

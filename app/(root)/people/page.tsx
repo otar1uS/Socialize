@@ -2,7 +2,7 @@
 
 import { User } from "@/TS/ActionTypes";
 import Loader from "@/components/ui/Loader";
-import UserCard from "@/components/layout/UserCard";
+import UserCard from "@/components/cards/UserCard";
 import { useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 import useUserState from "@/store/UserStore";

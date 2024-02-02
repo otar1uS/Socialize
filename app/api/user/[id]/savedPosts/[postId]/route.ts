@@ -15,7 +15,10 @@ export const POST = async (req: Request, { params }: Params) => {
       .exec();
 
     const post = await Post.findById(postId)
-      .populate("creator likes comments.user")
+      .populate(
+        "creator likes comments.creator comments.likes comments.replies.creator"
+      )
+
       .exec();
 
     const isSaved = user.savedPosts.find(

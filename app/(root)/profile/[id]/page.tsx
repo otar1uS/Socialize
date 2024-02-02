@@ -1,20 +1,17 @@
 "use client";
 
-import {
-  SlUserFollow as FollowIcon,
-  SlUserFollowing as FollowingIcon,
-} from "react-icons/sl";
 import { User } from "@/TS/ActionTypes";
 import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/shadcn-ui/button";
-import { Cards } from "@/components/layout/Cards";
-import UserCard from "@/components/layout/UserCard";
+import { Cards } from "@/components/cards/Cards";
+import UserCard from "@/components/cards/UserCard";
 import { followUnfollowFunction } from "@/components/forms/onFollow";
 import useUserState from "@/store/UserStore";
 import Loader from "@/components/ui/Loader";
+import { FollowIcon, FollowingIcon } from "@/lib/Utilities/IconsStore";
 
 const Profile = () => {
   const { user } = useUser();

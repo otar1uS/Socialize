@@ -3,8 +3,7 @@
 import { ReactNode, useEffect, useRef } from "react";
 import { SearchBar } from "../ui/SearchBar";
 import { SignOutButton, SignedIn, UserButton } from "@clerk/nextjs";
-import { CiLogout as LogoutIcon } from "react-icons/ci";
-
+import { LogoutIcon } from "@/lib/Utilities/IconsStore";
 import { Button } from "../shadcn-ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

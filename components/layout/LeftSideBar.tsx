@@ -10,7 +10,7 @@ import {
 import SidebarNavigation from "../NavLinks/SidebarNavigation";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
-import { CiLogout as LogoutIcon } from "react-icons/ci";
+import { LogoutIcon } from "@/lib/Utilities/IconsStore";
 import { useEffect } from "react";
 
 import { User } from "@/TS/ActionTypes";

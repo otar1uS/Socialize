@@ -1,7 +1,7 @@
 "use client";
 
 import { Post } from "@/TS/ActionTypes";
-import { Cards } from "@/components/layout/Cards";
+import { Cards } from "@/components/cards/Cards";
 import { Button } from "@/components/shadcn-ui/button";
 import { CardsSkeleton } from "@/components/ui/skeletons";
 import Link from "next/link";

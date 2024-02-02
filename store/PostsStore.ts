@@ -1,7 +1,6 @@
 "use client";
 
-import { Post } from "@/TS/ActionTypes";
-
+import { Comment, Post, User } from "@/TS/ActionTypes";
 import { create } from "zustand";
 
 interface postState {
@@ -12,14 +11,13 @@ interface postState {
   switcher: boolean;
   switcherLike: boolean;
 
-  getOnePostById: (postId: string) => void;
-  getPostsById: (postId: string) => void;
   allPostsFetcher: () => Promise<void>;
   postHandler: (
     url: string,
     method: string,
     body?: { text: string }
   ) => Promise<void>;
+  addComment: (Data: Comment) => void;
   deletePost: (postId: string) => void;
 }
 
@@ -38,13 +36,12 @@ const usePostState = create<postState>((set) => ({
     try {
       const response = await fetch("/api/posts");
 
-      console.log(response);
-
       if (!response.ok) {
         throw new Error("something went wrong while fetching all posts");
       }
 
       const data = await response.json();
+      console.log(response);
       set({ posts: data });
       set({ loading: false });
     } catch (error) {
@@ -60,7 +57,7 @@ const usePostState = create<postState>((set) => ({
       headers: {
         "Content-Type": "application/json",
       },
-      body: body as unknown as BodyInit,
+      body: JSON.stringify(body) as unknown as BodyInit,
     });
 
     if (!response.ok) {
@@ -70,7 +67,7 @@ const usePostState = create<postState>((set) => ({
     if (method === "POST") {
       if (url.split("/").includes("savedPosts")) {
         set((state) => ({ ...state, switcher: !state.switcher }));
-      } else {
+      } else if (url.split("/").includes("likedPosts")) {
         set((state) => ({ ...state, switcherLike: !state.switcherLike }));
       }
     }
@@ -78,22 +75,31 @@ const usePostState = create<postState>((set) => ({
 
   // !none async functions------
 
-  //! get one post by id
-  getOnePostById: (postId: string) => {
-    set((state) => {
-      const foundPost = state.posts.find(
-        (post) => post._id.toString() === postId
-      );
-      return { ...state, post: foundPost };
-    });
-  },
+  //!add comment
 
-  //! get posts by UserId
-  getPostsById: (postId: string) =>
-    set((state) => ({
-      ...state,
-      posts: state.posts.filter((post) => post._id.toString() === postId),
-    })),
+  // key={com._id.toString()}
+  // picture={com.creator.profilePhoto!}
+  // username={com.creator.firstName + " " + com.creator.lastName}
+  // text={com.text}
+  // time={formattedDate}
+  // clerkId={com.creator.clerkId!}
+
+  addComment: (data: Comment) =>
+    set((state) => {
+      const updatedPosts = state.posts.map((post) => {
+        if (post._id.toString() === data.postId) {
+          post.comments.push({
+            _id: data.postId as any,
+            text: data.text,
+            creator: data.creator as User,
+            createdAt: data.time as any,
+            replies: [],
+          });
+        }
+        return post;
+      });
+      return { ...state, posts: updatedPosts };
+    }),
 
   //!delete post
   deletePost: (postId: string) =>
@@ -104,5 +110,16 @@ const usePostState = create<postState>((set) => ({
       return { ...state, posts: updatedPosts };
     }),
 }));
+
+export const usePosts = () => usePostState((state) => state.posts);
+export const useDeletePost = () => usePostState((state) => state.deletePost);
+export const usePostHandler = () => usePostState((state) => state.postHandler);
+export const useSwitcher = () => usePostState((state) => state.switcher);
+export const useSwitcherLike = () =>
+  usePostState((state) => state.switcherLike);
+export const useAllPostsFetcher = () =>
+  usePostState((state) => state.allPostsFetcher);
+export const useAddComment = () => usePostState((state) => state.addComment);
+export const useLoading = () => usePostState((state) => state.loading);
 
 export default usePostState;

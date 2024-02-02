@@ -7,32 +7,35 @@ export const POST = async (req: Request, { params }: Params) => {
   try {
     await connectToDataBase();
 
-    const user = await User.findOne({ clerkId: params.creatorId }).exec();
-    const post = await Post.findById(params.id).exec();
+    const user = await User.findOne({ clerkId: params.replierId }).exec();
+    const post = await Post.findOne({ "comments._id": params.id }).exec();
 
     if (!post || !user) {
-      return new Response(JSON.stringify({ error: "Post or user not found" }), {
-        status: 404,
-      });
+      return new Response(
+        JSON.stringify({ error: "comment or user not found" }),
+        {
+          status: 404,
+        }
+      );
     }
 
     const body = await req.json();
 
-    post.comments.push({
+    const comment = post.comments.id(params.id);
+    comment.replies.push({
       text: body?.text,
       creator: user._id,
     });
 
     await post.save();
 
-    const updatedPost = await Post.findById(params.id)
+    const updatedPost = await Post.findById(post._id)
       .populate(
         "creator likes comments.creator comments.likes comments.replies.creator"
       )
-
       .exec();
 
-    return new Response(JSON.stringify(post), { status: 200 });
+    return new Response(JSON.stringify(updatedPost), { status: 200 });
   } catch (error) {
     console.error(error);
 

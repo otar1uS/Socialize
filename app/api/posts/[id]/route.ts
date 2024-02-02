@@ -9,7 +9,10 @@ export const GET = async (req: Request, { params }: Params) => {
     await connectToDataBase();
 
     const post = await Post.findById(params.id)
-      .populate("likes creator comments.user")
+      .populate(
+        "creator likes comments.creator comments.likes comments.replies.creator"
+      )
+
       .exec();
 
     return new Response(JSON.stringify(post), { status: 200 });

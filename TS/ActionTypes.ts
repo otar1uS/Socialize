@@ -1,5 +1,29 @@
+import { NextRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 
+// Common interfaces
+interface UserInfo {
+  clerkId: string;
+  firstName: string;
+  lastName: string;
+  profilePhoto: string;
+}
+
+interface PostData {
+  creator: UserInfo;
+  caption: string;
+  createdAt: string;
+}
+
+// Shared between CardHeaderComponentProps and AvatarComponentProps
+export interface CommonComponentProps {
+  isItProfile: boolean;
+  userInfo: UserInfo;
+  postData: PostData;
+  router: NextRouter;
+}
+
+// ButtonProps interface
 export interface ButtonProps {
   size: string;
   type: "button" | "submit" | "reset";
@@ -7,6 +31,7 @@ export interface ButtonProps {
   children: React.ReactNode;
 }
 
+// ClerkUser interface
 export interface ClerkUser {
   _id: ObjectId;
   username?: string;
@@ -21,6 +46,8 @@ export interface ClerkUser {
 
   profilePhoto?: string;
 }
+
+// PostContentArray, SetErrorsProps, ObjectId, DateObject
 type PostContent = {
   postPhoto: boolean;
   postPhotoMessage: string;
@@ -46,17 +73,20 @@ type ObjectId = {
 };
 
 type DateObject = {
+  length: any;
   $date: string;
 };
 
+// postComments interface
 type postComments = {
   _id: ObjectId;
   text: string;
-  user: ClerkUser;
-  date: DateObject;
+  creator: User;
+  createdAt: DateObject;
   replies: postComments[];
 };
 
+// Post interface
 export type Post = {
   _id: ObjectId;
   creator: ClerkUser;
@@ -70,6 +100,15 @@ export type Post = {
   __v: number;
 };
 
+// Comment interface
+export type Comment = {
+  text: string;
+  creator: User | undefined;
+  time: Date;
+  postId: string;
+};
+
+// User interface
 export type User = {
   _id: string;
   clerkId: string;
@@ -86,3 +125,13 @@ export type User = {
   savedPosts: Post[];
   username: string;
 };
+
+// CardHeaderComponentProps interface
+export interface CardHeaderComponentProps extends CommonComponentProps {
+  switcher: boolean;
+  postHandler: (url: string, method: string) => void;
+  savePostUrl: string;
+}
+
+// AvatarComponentProps interface
+export interface AvatarComponentProps extends CommonComponentProps {}

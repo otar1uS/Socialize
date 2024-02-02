@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+
 import { Button } from "../shadcn-ui/button";
 import { useUser } from "@clerk/nextjs";
 import { onSubmit } from "./onSubmit";
 import { useRouter } from "next/navigation";
 import { Post } from "@/TS/ActionTypes";
+import { AddPhotoIcon } from "@/lib/Utilities/IconsStore";
 
 export default function FormPostEditing({
   postInfo = {
@@ -94,10 +95,7 @@ export default function FormPostEditing({
           />
         )}
 
-        <MdOutlineAddPhotoAlternate
-          size={70}
-          onClick={() => fileInputRef.current?.click()}
-        />
+        <AddPhotoIcon size={70} onClick={() => fileInputRef.current?.click()} />
 
         <p onClick={() => fileInputRef.current?.click()} className="relative">
           Upload a photo

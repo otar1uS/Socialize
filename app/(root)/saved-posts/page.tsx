@@ -1,7 +1,7 @@
 "use client";
 
 import { Post } from "@/TS/ActionTypes";
-import { Cards } from "@/components/layout/Cards";
+import { Cards } from "@/components/cards/Cards";
 
 import { CardsSkeleton } from "@/components/ui/skeletons";
 import usePostState from "@/store/PostsStore";
