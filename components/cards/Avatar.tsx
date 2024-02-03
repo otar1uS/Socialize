@@ -1,12 +1,14 @@
 import { AvatarComponentProps } from "@/TS/ActionTypes";
 import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
+import { useRouter } from "next/navigation";
 
 export const AvatarComponent: React.FC<AvatarComponentProps> = ({
   isItProfile,
   userInfo,
   postData,
-  router,
 }) => {
+  const router = useRouter();
+
   return (
     <div className="flex gap-2 items-center mb-2">
       <Avatar>

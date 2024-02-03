@@ -17,10 +17,9 @@ interface PostData {
 
 // Shared between CardHeaderComponentProps and AvatarComponentProps
 export interface CommonComponentProps {
-  isItProfile: boolean;
-  userInfo: UserInfo;
-  postData: PostData;
-  router: NextRouter;
+  isItProfile?: boolean;
+  userInfo?: UserInfo;
+  postData: Post;
 }
 
 // ButtonProps interface
@@ -128,9 +127,8 @@ export type User = {
 
 // CardHeaderComponentProps interface
 export interface CardHeaderComponentProps extends CommonComponentProps {
-  switcher: boolean;
   postHandler: (url: string, method: string) => void;
-  savePostUrl: string;
+  userId: string;
 }
 
 // AvatarComponentProps interface
