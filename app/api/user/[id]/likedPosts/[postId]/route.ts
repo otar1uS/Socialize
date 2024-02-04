@@ -1,4 +1,5 @@
 import { Post as PostTypes } from "@/TS/ActionTypes";
+import LikedPosts from "@/app/(root)/liked-posts/page";
 import Post from "@/lib/models/Post";
 import User from "@/lib/models/User";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
@@ -18,21 +19,24 @@ export const POST = async (req: Request, { params }: Params) => {
       .populate(
         "creator likes comments.creator comments.likes comments.replies.creator"
       )
-
       .exec();
 
     const isLiked = user?.likedPosts.find(
       (post: PostTypes) => post._id.toString() === postId
     );
+
     if (isLiked) {
       user.likedPosts = user.likedPosts.filter(
         (post: PostTypes) => post?._id.toString() !== postId
       );
+      post.likes.pull(user._id);
     } else {
       user.likedPosts.push(post);
+      post.likes.push(user._id);
     }
 
     await user.save();
+    await post.save();
 
     return new Response(JSON.stringify(user), { status: 200 });
   } catch (err) {

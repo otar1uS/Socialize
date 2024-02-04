@@ -20,8 +20,6 @@ const Home = () => {
     fetchData();
   }, [allPosts]);
 
-  console.log(posts);
-
   return loading ? (
     <CardsSkeleton />
   ) : (

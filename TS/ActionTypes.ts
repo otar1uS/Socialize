@@ -7,6 +7,7 @@ interface UserInfo {
   firstName: string;
   lastName: string;
   profilePhoto: string;
+  username: string;
 }
 
 interface PostData {
@@ -105,6 +106,7 @@ export type Comment = {
   creator: User | undefined;
   time: Date;
   postId: string;
+  commentId?: string;
 };
 
 // User interface
@@ -133,3 +135,36 @@ export interface CardHeaderComponentProps extends CommonComponentProps {
 
 // AvatarComponentProps interface
 export interface AvatarComponentProps extends CommonComponentProps {}
+
+export interface commentPosterProps {
+  postId: any;
+  commentId?: string;
+
+  clerkId?: string;
+  isItComment: boolean;
+}
+
+export type commentPosterHandlerProps =
+  | React.KeyboardEvent<HTMLInputElement>
+  | React.MouseEvent<HTMLButtonElement>;
+
+export interface commentProps {
+  username: string;
+  time: string;
+  text: string;
+  picture: string;
+  clerkId: string;
+  commentId: string;
+  postId: string;
+}
+
+export interface CommentUIProps {
+  username: string;
+  time: string;
+  text: string;
+  picture: string;
+  clerkId: string;
+  setShowReply: Dispatch<SetStateAction<boolean>>;
+  isItReplay: boolean;
+  replayCount?: number;
+}

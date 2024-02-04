@@ -24,6 +24,7 @@ export const POST = async (req: Request, { params }: Params) => {
     const isSaved = user.savedPosts.find(
       (post: PostTypes) => post._id.toString() === postId
     );
+
     if (isSaved) {
       user.savedPosts = user.savedPosts.filter(
         (post: PostTypes) => post?._id.toString() !== postId

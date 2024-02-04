@@ -4,31 +4,32 @@ import React from "react";
 import { Input } from "../shadcn-ui/input";
 import { Button } from "../shadcn-ui/button";
 import { useState } from "react";
-import { User } from "@/TS/ActionTypes";
+import {
+  User,
+  commentPosterHandlerProps,
+  commentPosterProps,
+} from "@/TS/ActionTypes";
 
 import useUserState from "@/store/UserStore";
 import { useUser } from "@clerk/nextjs";
-import { useAddComment, usePostHandler } from "@/store/PostsStore";
+import {
+  useAddComment,
+  useAddReplies,
+  usePostHandler,
+} from "@/store/PostsStore";
 
 export const CommentPoster = ({
   postId,
-
   isItComment,
   commentId,
-
   clerkId,
-}: {
-  postId?: any;
-  commentId?: string;
-
-  clerkId?: string;
-  isItComment: boolean;
-}) => {
+}: commentPosterProps) => {
   const [comment, setComment] = useState("");
   const Users = useUserState((state) => state.Users);
   const { user } = useUser();
   const postHandler = usePostHandler();
   const addComment = useAddComment();
+  const addReply = useAddReplies();
   const creator = Users.find((u: User) => u.clerkId === user?.id);
   const time: Date = new Date();
 
@@ -36,17 +37,27 @@ export const CommentPoster = ({
     ? `/api/posts/${postId}/comment/${user?.id}`
     : `/api/posts/${commentId}/replies/${clerkId}`;
 
-  const handler = (
-    e:
-      | React.KeyboardEvent<HTMLInputElement>
-      | React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handler = (e: commentPosterHandlerProps) => {
     if (
       (e as React.KeyboardEvent<HTMLInputElement>)?.key === "Enter" ||
       e.type === "click"
     ) {
       postHandler(url, "POST", { text: comment });
-      addComment({ text: comment, creator, time, postId: postId.toString() });
+      isItComment
+        ? addComment({
+            text: comment,
+            creator,
+            time,
+            postId: postId.toString(),
+          })
+        : addReply({
+            text: comment,
+            creator,
+            time,
+            postId: postId.toString(),
+            commentId: commentId!.toString(),
+          });
+
       setComment("");
     }
   };

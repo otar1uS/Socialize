@@ -69,7 +69,7 @@ const Profile = () => {
                 <div className="flex justify-between items-start">
                   <div className="flex-col gap-4">
                     <h1 className="text-[20px] text-white font-bold ">
-                      {userStats?.firstName + " " + userStats?.lastName}
+                      {userStats?.username}
                     </h1>
                     <p className="text-pink-400 text-[16px] lowercase">
                       @{userStats?.firstName + "" + userStats?.lastName}

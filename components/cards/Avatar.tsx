@@ -43,9 +43,7 @@ export const AvatarComponent: React.FC<AvatarComponentProps> = ({
           )
         }
       >
-        {isItProfile
-          ? userInfo?.firstName + " " + userInfo?.lastName
-          : postData?.creator?.firstName + " " + postData?.creator?.lastName}
+        {isItProfile ? userInfo?.username : postData?.creator?.username}
       </p>
     </div>
   );

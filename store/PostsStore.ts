@@ -18,6 +18,7 @@ interface postState {
     body?: { text: string }
   ) => Promise<void>;
   addComment: (Data: Comment) => void;
+  addReplies: (Data: Comment) => void;
   deletePost: (postId: string) => void;
 }
 
@@ -41,6 +42,9 @@ const usePostState = create<postState>((set) => ({
       }
 
       const data = await response.json();
+
+      console.log(data);
+
       console.log(response);
       set({ posts: data });
       set({ loading: false });
@@ -66,9 +70,33 @@ const usePostState = create<postState>((set) => ({
 
     if (method === "POST") {
       if (url.split("/").includes("savedPosts")) {
-        set((state) => ({ ...state, switcher: !state.switcher }));
+        set((state) => {
+          const updatedPosts = state.posts.map((p) => {
+            p.creator.savedPosts = p.creator.savedPosts.filter(
+              (id) => id !== p._id.toString()
+            );
+            return p;
+          });
+          return {
+            ...state,
+            switcher: !state.switcher,
+            posts: updatedPosts,
+          };
+        });
       } else if (url.split("/").includes("likedPosts")) {
-        set((state) => ({ ...state, switcherLike: !state.switcherLike }));
+        set((state) => {
+          const updatedPosts = state.posts.map((p) => {
+            p.creator.likedPosts = p.creator.likedPosts.filter(
+              (id) => id !== p._id.toString()
+            );
+            return p;
+          });
+          return {
+            ...state,
+            switcherLike: !state.switcherLike,
+            posts: updatedPosts,
+          };
+        });
       }
     }
   },
@@ -76,13 +104,6 @@ const usePostState = create<postState>((set) => ({
   // !none async functions------
 
   //!add comment
-
-  // key={com._id.toString()}
-  // picture={com.creator.profilePhoto!}
-  // username={com.creator.firstName + " " + com.creator.lastName}
-  // text={com.text}
-  // time={formattedDate}
-  // clerkId={com.creator.clerkId!}
 
   addComment: (data: Comment) =>
     set((state) => {
@@ -94,6 +115,26 @@ const usePostState = create<postState>((set) => ({
             creator: data.creator as User,
             createdAt: data.time as any,
             replies: [],
+          });
+        }
+        return post;
+      });
+      return { ...state, posts: updatedPosts };
+    }),
+  addReplies: (data: Comment) =>
+    set((state) => {
+      const updatedPosts = state.posts.map((post) => {
+        if (post._id.toString() === data.postId) {
+          post.comments.map((c) => {
+            if (c._id.toString() === data.commentId) {
+              c.replies.push({
+                _id: data.postId as any,
+                text: data.text,
+                creator: data.creator as User,
+                createdAt: data.time as any,
+                replies: [],
+              });
+            }
           });
         }
         return post;
@@ -120,6 +161,7 @@ export const useSwitcherLike = () =>
 export const useAllPostsFetcher = () =>
   usePostState((state) => state.allPostsFetcher);
 export const useAddComment = () => usePostState((state) => state.addComment);
+export const useAddReplies = () => usePostState((state) => state.addReplies);
 export const useLoading = () => usePostState((state) => state.loading);
 
 export default usePostState;

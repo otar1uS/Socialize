@@ -16,11 +16,12 @@ export default function Comments({ post }: { post: Post }) {
             <Comment
               key={i}
               picture={com.creator.profilePhoto!}
-              username={com.creator.firstName + " " + com.creator.lastName}
+              username={com.creator.username}
               text={com.text}
               time={formatTime(com.createdAt)}
               clerkId={com.creator.clerkId!}
               commentId={com._id.toString()}
+              postId={post._id.toString()}
             />
           );
         })}

@@ -40,7 +40,7 @@ const UserCard = ({
         className="cursor-pointer "
         onClick={() => router.replace(`/profile/${userData.clerkId}`)}
       >
-        {userData.firstName + " " + userData.lastName}
+        {userData.username}
       </p>
 
       {user?.id === userData.clerkId ? null : !setIsFollowing ? (

@@ -23,10 +23,17 @@ const CardFooterComponent = ({
   postHandler: (url: string, method: string) => void;
 }) => {
   const [showComments, setShowComments] = useState(false);
+  const [likeCount, setLikeCount] = useState(Number(postData.likes.length));
   const switcherLike = useSwitcherLike();
   const deletePost = useDeletePost();
   const likePostUrl = `/api/user/${userId}/likedPosts/${postData?._id}`;
   const deletePostUrl = `/api/posts/${postData?._id}/${postData?.creator?._id}`;
+
+  const handleLikeClick = async () => {
+    postHandler(likePostUrl, "POST");
+
+    setLikeCount((prevCount) => (switcherLike ? prevCount - 1 : prevCount + 1));
+  };
 
   return (
     <CardFooter className="flex-col items-start gap-2">
@@ -34,24 +41,20 @@ const CardFooterComponent = ({
       <div className="flex justify-between items-start w-full">
         <div className="flex  items-center  ">
           {switcherLike ? (
-            <div className="flex  items-center  cursor-pointer text-cyan  ">
-              <FavoriteIcon
-                size={28}
-                onClick={() => {
-                  postHandler(likePostUrl, "POST");
-                }}
-              />
-              <p>0</p>
+            <div
+              className="flex  items-center  cursor-pointer text-pink-900   "
+              onClick={handleLikeClick}
+            >
+              <FavoriteIcon size={28} />
+              <p>{likeCount}</p>
             </div>
           ) : (
-            <div className="flex  items-center text-slate-200 cursor-pointer hover:text-pink-700  ">
-              <UnFavoriteIcon
-                size={28}
-                onClick={() => {
-                  postHandler(likePostUrl, "POST");
-                }}
-              />
-              <p>0</p>
+            <div
+              className="flex  items-center text-slate-200 cursor-pointer hover:text-pink-700   "
+              onClick={handleLikeClick}
+            >
+              <UnFavoriteIcon size={28} />
+              <p>{likeCount}</p>
             </div>
           )}
         </div>

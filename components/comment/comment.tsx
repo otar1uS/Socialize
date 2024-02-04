@@ -1,67 +1,66 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { MdOutlineQuestionAnswer } from "react-icons/md";
-import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
 import { useState } from "react";
-import { usePostHandler } from "@/store/PostsStore";
-import { useUser } from "@clerk/nextjs";
 import { CommentPoster } from "./commentPoster";
+import { usePosts } from "@/store/PostsStore";
+import { commentProps } from "@/TS/ActionTypes";
+import { formatTime } from "@/lib/Utilities/utils";
+import { CommentUI } from "./CommentUI";
 
 export const Comment = ({
+  clerkId,
+  commentId,
+  postId,
   username,
   time,
   text,
   picture,
-  clerkId,
-  commentId,
-}: {
-  username: string;
-  time: string;
-  text: string;
-  picture: string;
-  clerkId: string;
-  commentId: string;
-}) => {
-  const router = useRouter();
-
+}: commentProps) => {
   const [showReply, setShowReply] = useState(false);
+
+  const posts = usePosts();
+
+  const replay = posts
+    .find((p) => p._id.toString() === postId)
+    ?.comments.find((c) => c._id.toString() === commentId)?.replies;
 
   return (
     <div>
-      <div className="flex">
-        <Avatar>
-          <AvatarImage
-            src={picture}
-            onClick={() => router.replace(`/profile/${clerkId}`)}
-            className="cursor-pointer"
-          />
-          <AvatarFallback>{username.slice(0, 2).toUpperCase()}</AvatarFallback>
-        </Avatar>
-
-        <div className="flex flex-col items-start gap-2 ml-2">
-          <div className="flex gap-2 items-center">
-            <div className=" text-[12px]  md:text-[14px] font-[700]">
-              {username}
-            </div>
-            <div className="text-[10px]  md:text-[12px]">{time}</div>
-          </div>
-          <div className="text-[12px]  md:text-[14px] text-wrap">{text}</div>
-        </div>
-        <MdOutlineQuestionAnswer
-          onClick={() => setShowReply((e: boolean) => !e)}
-          size={18}
-          className="ml-auto mt-auto cursor-pointer"
+      <div className="flex flex-col items-start gap-8">
+        <CommentUI
+          username={username}
+          time={time}
+          text={text}
+          picture={picture}
+          clerkId={clerkId}
+          isItReplay={false}
+          setShowReply={setShowReply}
+          replayCount={replay?.length}
         />
       </div>
-
       {showReply && (
-        <div className="flex ml-10 py-4 border-l-[1px] border-[#ffffff53]">
+        <div className="flex ml-10 py-4  border-l-[1px] border-[#ffffff53]">
           <div className="flex flex-col items-start gap-2 ml-2">
+            {replay?.map((r, i) => {
+              const time = formatTime(r.createdAt);
+              return (
+                <CommentUI
+                  key={i}
+                  username={r.creator.username}
+                  time={time}
+                  text={r.text}
+                  picture={r.creator.profilePhoto}
+                  clerkId={r.creator.clerkId}
+                  isItReplay={true}
+                  setShowReply={setShowReply}
+                />
+              );
+            })}
             <CommentPoster
               commentId={commentId}
               clerkId={clerkId}
               isItComment={false}
+              postId={postId}
             />
           </div>
         </div>

@@ -58,9 +58,7 @@ const LeftSideBar = () => {
               <AvatarFallback>{userData?.username?.slice(0, 2)}</AvatarFallback>
             </Avatar>
           </Link>
-          <p className=" max-xl:hidden">
-            {userData?.firstName} {userData?.lastName}
-          </p>
+          <p className=" max-xl:hidden">{userData?.username}</p>
         </div>
         <div className="flex flex-row gap-2 items-center text-white max-xl:hidden ">
           {userStats.map((i) => {

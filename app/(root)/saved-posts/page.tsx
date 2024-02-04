@@ -3,10 +3,7 @@
 import { Post } from "@/TS/ActionTypes";
 import { Cards } from "@/components/cards/Cards";
 
-import { CardsSkeleton } from "@/components/ui/skeletons";
 import usePostState from "@/store/PostsStore";
-
-import React, { useEffect, useState } from "react";
 
 const SavedPosts = () => {
   const posts = usePostState((state) => state.posts);

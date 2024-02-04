@@ -32,12 +32,12 @@ export const Cards = ({
   );
 
   if (
-    (pathname.split("/").includes("saved-posts") && !isItSavedPost) ||
-    (pathname.split("/").includes("liked-posts") && !isItLikedPost)
+    (pathname.split("/").includes("saved-posts") && !isItSavedPost[0]) ||
+    (pathname.split("/").includes("liked-posts") && !isItLikedPost[0])
   )
     return (
       <h1 className="text-center mt-5  text-[14px]  sm:text-[16px]  xl:text-[20px] w-full text-cyan">
-        {!isItSavedPost ? "No saved posts yet" : "No liked posts yet"}
+        {!isItSavedPost[0] ? "No saved posts yet" : "No liked posts yet"}
       </h1>
     );
 
@@ -56,7 +56,7 @@ export const Cards = ({
           alt="beautiful picture"
           width={500}
           height={500}
-          className=" max-w-full sm:w-full"
+          className=" max-w-full sm:w-full rounded-md"
         />
       </CardContent>
       <CardFooterComponent

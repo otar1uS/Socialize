@@ -1,5 +1,30 @@
 import mongoose from "mongoose";
 
+const ChatSchema = new mongoose.Schema({
+  partner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  messages: [
+    {
+      sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+});
+
 const UserSchema = new mongoose.Schema({
   clerkId: {
     type: String,
@@ -44,6 +69,10 @@ const UserSchema = new mongoose.Schema({
   },
   likedPosts: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+    default: [],
+  },
+  chats: {
+    type: [ChatSchema],
     default: [],
   },
 
