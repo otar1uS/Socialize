@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { Messages } from "../ui/Messages";
+import { Messages } from "../ui/message/Messages";
 import useUserState from "@/store/UserStore";
 import UserCard from "../cards/UserCard";
 

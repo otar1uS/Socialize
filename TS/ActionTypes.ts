@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { NextRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 
@@ -125,6 +126,7 @@ export type User = {
   profilePhoto: string;
   savedPosts: Post[];
   username: string;
+  chats: IChat[];
 };
 
 // CardHeaderComponentProps interface
@@ -168,3 +170,38 @@ export interface CommentUIProps {
   isItReplay: boolean;
   replayCount?: number;
 }
+
+export interface IMessage {
+  sender: Types.ObjectId;
+  content: string;
+  timestamp?: Date;
+}
+
+export interface IChat {
+  _id: Types.ObjectId;
+
+  partner: Types.ObjectId;
+  messages: IMessage[];
+}
+
+export interface IUser {
+  clerkId: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  profilePhoto: string;
+  followers: Types.ObjectId[];
+  following: Types.ObjectId[];
+  posts: Types.ObjectId[];
+  savedPosts: Types.ObjectId[];
+  likedPosts: Types.ObjectId[];
+  createdAt?: Date;
+  chats: IChat[];
+}
+
+export interface IUserDocument extends IUser, Document {}
+
+export interface IChatDocument extends IChat, Document {}
+
+export interface IMessageDocument extends IMessage, Document {}

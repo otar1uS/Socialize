@@ -22,9 +22,7 @@ export const POST = async (req: Request, { params }: Params) => {
       chat.partner.equals(params.partnerId)
     );
     if (existingChat) {
-      return new Response(JSON.stringify({ error: "chat already exisits " }), {
-        status: 404,
-      });
+      return new Response(JSON.stringify(user), { status: 200 });
     }
 
     user.chats.push({

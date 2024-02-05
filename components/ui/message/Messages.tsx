@@ -6,16 +6,35 @@ import {
   MdOutlineKeyboardDoubleArrowUp as ArrowUpIcon,
 } from "react-icons/md";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../shadcn-ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../shadcn-ui/avatar";
 import useUserState from "@/store/UserStore";
 import { useUser } from "@clerk/nextjs";
+import ChatBox from "./chat";
+import useMessageStore from "@/store/MessagesStore";
 
 export const Messages = () => {
   const [open, setOpen] = useState(false);
+  const [openChat, setOpenChat] = useState(false);
+  const createChat = useMessageStore((state) => state.createChat);
+  const chats = useMessageStore((state) => state.chats);
+
   const { user } = useUser();
   const users = useUserState((state) =>
     state.Users.filter((u) => u.clerkId !== user?.id)
   );
+  const userId = useUserState((state) =>
+    state.Users.filter((u) => u.clerkId === user?.id)
+  );
+
+  const openChatHandler = async (partnerId: string) => {
+    setOpenChat((e) => !e);
+
+    try {
+      await createChat(userId[0]._id, partnerId);
+    } catch (error) {
+      console.error("Error creating chat:", error);
+    }
+  };
 
   return (
     <div className=" absolute bottom-0  z-50 w-96 py-4 h-auto border-[1px] border-b-[0px] bg-black rounded-tl-md rounded-tr-md  ">
@@ -33,9 +52,21 @@ export const Messages = () => {
         } `}
       >
         {users?.map((u, index) => {
-          return (
+          console.log(chats);
+          return openChat ? (
+            chats.length > 0 ? (
+              <ChatBox
+                key={index}
+                curUser={userId[0]._id.toString()}
+                chat={chats.filter(
+                  (c) => c.chats.find.toString() !== u._id.toString()
+                )}
+              />
+            ) : null
+          ) : (
             <div
               key={index}
+              onClick={() => openChatHandler(u._id)}
               className="flex items-center  border-b-[1px_gray] justify-start mt-3 gap-3 px-3 cursor-pointer"
             >
               <Avatar>

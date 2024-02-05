@@ -1,3 +1,4 @@
+import { IChat } from "@/TS/ActionTypes";
 import User from "@/lib/models/User";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
@@ -7,29 +8,30 @@ export const POST = async (req: Request, { params }: Params) => {
     await connectToDataBase();
 
     const user = await User.findById(params.userId);
-    const partner = await User.findById(params.partnerId);
 
-    if (!partner || !user) {
+    if (!user) {
+      return new Response(JSON.stringify({ error: "user can't  be found " }), {
+        status: 404,
+      });
+    }
+
+    const chat = user.chats.find((chat: IChat) =>
+      chat?._id.equals(params.partnerId)
+    );
+    if (!chat) {
       return new Response(
-        JSON.stringify({ error: "partner and user cant be found" }),
+        JSON.stringify({ error: "chat with this id cant be found " }),
         {
           status: 404,
         }
       );
     }
 
-    const existingChat = user.chats.find((chat) =>
-      chat.partner.equals(params.partnerId)
-    );
-    if (existingChat) {
-      return new Response(JSON.stringify({ error: "chat already exisits " }), {
-        status: 404,
-      });
-    }
+    const body = await req.json();
 
-    user.chats.push({
-      partner: params.partnerId,
-      messages: [],
+    chat.messages.push({
+      sender: params.userId,
+      content: body?.text,
     });
 
     await user.save();
