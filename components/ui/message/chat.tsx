@@ -2,15 +2,15 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 import { BsFillSendFill } from "react-icons/bs";
-import { IChat, User } from "@/TS/ActionTypes";
+import { IChat, IMessage, User } from "@/TS/ActionTypes";
 import useMessageStore from "@/store/MessagesStore";
 
-const ChatBox = ({ chat, curUser }: { chat: User[]; curUser: string }) => {
+const ChatBox = ({ chat, curUser }: { chat: IChat; curUser: string }) => {
   const fetchMessages = useMessageStore((state) => state.fetchMessages);
 
-  const { chats } = chat[0];
+  console.log(chat);
 
-  const messages = chats[0].messages;
+  const messages = chat.messages;
 
   const [textMessage, setMessage] = useState<string>("");
   const scroll = useRef<HTMLDivElement | null>(null);
@@ -34,10 +34,11 @@ const ChatBox = ({ chat, curUser }: { chat: User[]; curUser: string }) => {
 
   const sendMessage = () => {
     if (textMessage.trim() !== "") {
-      fetchMessages(curUser, chats[0]._id.toString(), textMessage);
+      fetchMessages(curUser, chat._id.toString(), textMessage);
 
       setMessage("");
     }
+    console.log("i");
   };
 
   return (
@@ -46,27 +47,26 @@ const ChatBox = ({ chat, curUser }: { chat: User[]; curUser: string }) => {
         {/* Chat with {chattingWithName && chattingWithName.username} */}
       </h2>
       <div className="bg-white  flex flex-col gap-1 max-w-full rounded-lg p-4 shadow-md h-96 overflow-y-auto">
-        {messages.map((mes, i) => {
-          console.log(mes.sender);
-
-          return null;
-          // (
-          //   // <div
-          //   //   key={i}
-          //   //   className={` flex-col flex max-w-fit ${
-          //   //     mes.sender.toString() === curUser
-          //   //       ? "text-white bg-blue-500 sender self-end"
-          //   //       : "bg-gray-300 text-gray-800 receiver self-start"
-          //   //   } rounded-lg p-2`}
-          //   //   ref={scroll}
-          //   // >
-          //   //   <p>{mes.content}</p>
-          //   //   <p className="text-[10px] font-[500]">
-          //   //     {moment(mes.timestamp).calendar()}
-          //   //   </p>
-          //   // </div>
-          // );
-        })}
+        {chat.messages.length > 0
+          ? chat.messages.map((mes: IMessage, i: number) => {
+              return (
+                <div
+                  key={i}
+                  className={` flex-col flex max-w-fit ${
+                    mes.sender.toString() === curUser
+                      ? "text-white bg-blue-500 sender self-end"
+                      : "bg-gray-300 text-gray-800 receiver self-start"
+                  } rounded-lg p-2`}
+                  ref={scroll}
+                >
+                  <p>{mes.content}</p>
+                  <p className="text-[10px] font-[500]">
+                    {moment(mes.timestamp).calendar()}
+                  </p>
+                </div>
+              );
+            })
+          : null}
       </div>
       <div className="flex items-center w-full gap-3 chat-input flex-grow-0">
         <InputEmoji

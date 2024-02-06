@@ -8,15 +8,16 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../shadcn-ui/avatar";
 import useUserState from "@/store/UserStore";
-import { useUser } from "@clerk/nextjs";
+import { currentUser, useUser } from "@clerk/nextjs";
 import ChatBox from "./chat";
 import useMessageStore from "@/store/MessagesStore";
+import { IChat } from "@/TS/ActionTypes";
 
 export const Messages = () => {
   const [open, setOpen] = useState(false);
   const [openChat, setOpenChat] = useState(false);
+  const [curChatId, setCurrentChatId] = useState<string>("");
   const createChat = useMessageStore((state) => state.createChat);
-  const chats = useMessageStore((state) => state.chats);
 
   const { user } = useUser();
   const users = useUserState((state) =>
@@ -28,13 +29,23 @@ export const Messages = () => {
 
   const openChatHandler = async (partnerId: string) => {
     setOpenChat((e) => !e);
-
+    setCurrentChatId(partnerId.toString());
     try {
       await createChat(userId[0]._id, partnerId);
     } catch (error) {
       console.error("Error creating chat:", error);
     }
   };
+
+  const chat = userId[0]?.chats?.find(
+    (c) => c.partner.toString() === curChatId
+  );
+
+  const partnerMessages = users
+    .find((u) => u._id.toString() === curChatId)
+    ?.chats.find((c) => c.partner.toString() === userId[0]._id)?.messages;
+
+  chat?.messages.concat(partnerMessages!) || [];
 
   return (
     <div className=" absolute bottom-0  z-50 w-96 py-4 h-auto border-[1px] border-b-[0px] bg-black rounded-tl-md rounded-tr-md  ">
@@ -51,34 +62,29 @@ export const Messages = () => {
           open ? "msg-open-transition" : "msg-close-transition"
         } `}
       >
-        {users?.map((u, index) => {
-          console.log(chats);
-          return openChat ? (
-            chats.length > 0 ? (
-              <ChatBox
-                key={index}
-                curUser={userId[0]._id.toString()}
-                chat={chats.filter(
-                  (c) => c.chats.find.toString() !== u._id.toString()
-                )}
-              />
-            ) : null
-          ) : (
-            <div
-              key={index}
-              onClick={() => openChatHandler(u._id)}
-              className="flex items-center  border-b-[1px_gray] justify-start mt-3 gap-3 px-3 cursor-pointer"
-            >
-              <Avatar>
-                <AvatarImage src={u.profilePhoto} />
-                <AvatarFallback>
-                  {u.username.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+        {openChat && (
+          <ChatBox curUser={userId[0]._id.toString()} chat={chat as IChat} />
+        )}
 
-              <p className="text-white text-md">{u.username}</p>
-              {/* <p className="text-indigo-200 text-sm">21/02/2023</p> */}
-            </div>
+        {users?.map((u, index) => {
+          return (
+            !openChat && (
+              <div
+                key={index}
+                onClick={() => openChatHandler(u._id)}
+                className="flex items-center  border-b-[1px_gray] justify-start mt-3 gap-3 px-3 cursor-pointer"
+              >
+                <Avatar>
+                  <AvatarImage src={u.profilePhoto} />
+                  <AvatarFallback>
+                    {u.username.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+
+                <p className="text-white text-md">{u.username}</p>
+                <p className="text-indigo-200 text-sm">21/02/2023</p>
+              </div>
+            )
           );
         })}
       </div>

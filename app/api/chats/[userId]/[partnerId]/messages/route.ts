@@ -18,6 +18,7 @@ export const POST = async (req: Request, { params }: Params) => {
     const chat = user.chats.find((chat: IChat) =>
       chat?._id.equals(params.partnerId)
     );
+
     if (!chat) {
       return new Response(
         JSON.stringify({ error: "chat with this id cant be found " }),

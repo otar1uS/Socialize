@@ -48,13 +48,11 @@ const useMessageStore = create<messageState>((set) => ({
       }
 
       const data = await response.json();
+      console.log(data);
 
       set((state) => {
-        console.log("Original State:", state);
-
-        const newMessage = data.chats.messages.pop();
-
-        console.log(newMessage);
+        const lastChat = data.chats[data.chats.length - 1];
+        const lastMessage = lastChat.messages[lastChat.messages.length - 1];
 
         const updatedChats = state.chats.map((chat) => {
           const partnerChat = chat.chats.find(
@@ -62,8 +60,7 @@ const useMessageStore = create<messageState>((set) => ({
           );
 
           if (partnerChat) {
-            const updatedMessages = [...partnerChat.messages, newMessage];
-            console.log("Updated Messages:", updatedMessages);
+            const updatedMessages = [...partnerChat.messages, lastMessage];
 
             return {
               ...chat,
