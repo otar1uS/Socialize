@@ -9,6 +9,11 @@ import {
 } from "react-icons/sl";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { CiLogout as LogoutIcon } from "react-icons/ci";
+import {
+  MdOutlineKeyboardDoubleArrowDown as ArrowDownIcon,
+  MdOutlineKeyboardDoubleArrowUp as ArrowUpIcon,
+} from "react-icons/md";
+import { IoIosArrowRoundBack as GetBackArrow } from "react-icons/io";
 
 export {
   FaEdit as EditIcon,
@@ -22,4 +27,7 @@ export {
   FollowingIcon,
   MdOutlineAddPhotoAlternate as AddPhotoIcon,
   LogoutIcon as LogoutIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+  GetBackArrow,
 };
