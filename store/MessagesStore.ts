@@ -32,53 +32,27 @@ const useMessageStore = create<messageState>((set) => ({
       console.error(error);
     }
   },
-
   fetchMessages: async (userId, partnerId, textMessage) => {
     try {
       const response = await fetch(
         `/api/chats/${userId}/${partnerId.toString()}/messages`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ text: textMessage }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("something went wrong while fetching messages");
+        throw new Error("Something went wrong while fetching messages");
       }
 
       const data = await response.json();
       console.log(data);
 
-      set((state) => {
-        const lastChat = data.chats[data.chats.length - 1];
-        const lastMessage = lastChat.messages[lastChat.messages.length - 1];
-
-        const updatedChats = state.chats.map((chat) => {
-          const partnerChat = chat.chats.find(
-            (c) => c._id.toString() === partnerId.toString()
-          );
-
-          if (partnerChat) {
-            const updatedMessages = [...partnerChat.messages, lastMessage];
-
-            return {
-              ...chat,
-              chats: chat.chats.map((c) =>
-                c._id.toString() === partnerId.toString()
-                  ? { ...c, messages: updatedMessages }
-                  : c
-              ),
-            };
-          }
-          console.log(chat);
-          return chat;
-        });
-
-        console.log("Updated Chats:", updatedChats);
-
-        return { chats: updatedChats };
-      });
+      set({ chats: [data] });
     } catch (error) {
       console.error(error);
     }

@@ -3,12 +3,31 @@ import moment from "moment";
 
 import { IChat, IMessage, User } from "@/TS/ActionTypes";
 
-const ChatBox = ({ chat, curUser }: { chat: IChat; curUser: string }) => {
-  const messages = chat.messages;
+const ChatBox = ({
+  curUserChat,
+  partnerUserChat,
+  curUser,
+}: {
+  curUserChat: IChat;
+  partnerUserChat: IChat;
+  curUser: string;
+}) => {
+  const messages = curUserChat.messages;
+
+  const curMessages = curUserChat.messages;
+  const partnerMessages = partnerUserChat.messages;
+
+  const allMessages = [...curMessages, ...partnerMessages].sort(
+    (a, b) =>
+      new Date(a.timestamp ?? 0).getTime() -
+      new Date(b.timestamp ?? 0).getTime()
+  );
+
+
 
   const scroll = useRef<HTMLDivElement | null>(null);
 
-  console.log(messages);
+
   const scrollToBottom = useCallback(() => {
     if (scroll.current) {
       scroll.current.scrollIntoView({ behavior: "smooth" });
@@ -22,8 +41,8 @@ const ChatBox = ({ chat, curUser }: { chat: IChat; curUser: string }) => {
   return (
     <div className="bg-gray-100 rounded-lg p-2 h-auto  relative">
       <div className="bg-white flex flex-col gap-1 max-w-full rounded-lg p-4 shadow-md min-h-[600px] overflow-y-scroll custom-scrollbar">
-        {chat.messages.length > 0
-          ? chat.messages.map((mes: IMessage, i: number) => {
+        {curUserChat.messages.length > 0 || partnerUserChat.messages.length > 0
+          ? allMessages.map((mes: IMessage, i: number) => {
               return (
                 <div
                   key={i}

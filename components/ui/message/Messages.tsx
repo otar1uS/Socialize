@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -10,7 +10,7 @@ import useUserState from "@/store/UserStore";
 import { useUser } from "@clerk/nextjs";
 import ChatBox from "./chat";
 import useMessageStore from "@/store/MessagesStore";
-import { IChat } from "@/TS/ActionTypes";
+
 import { MessageSender } from "./MessageSender";
 
 export const Messages = () => {
@@ -19,9 +19,9 @@ export const Messages = () => {
   const [curChatId, setCurrentChatId] = useState<string>("");
 
   const createChat = useMessageStore((state) => state.createChat);
-  const chats = useMessageStore((store) => store.chats);
 
   const { user } = useUser();
+
   const users = useUserState((state) =>
     state.Users.filter((u) => u.clerkId !== user?.id)
   );
@@ -29,10 +29,16 @@ export const Messages = () => {
     state.Users.filter((u) => u.clerkId === user?.id)
   );
 
+  const userChats = useMessageStore((state) => state.chats);
+
+  const chat = userChats[0]?.chats.filter(
+    (c) => c.partner.toString() == curChatId
+  );
+
   const openedUserInfo = users.find((u) => u._id.toString() === curChatId);
 
   const openChatHandler = async (partnerId: string) => {
-    setOpenChat((e) => !e);
+    setOpenChat((prev) => !prev);
     setCurrentChatId(partnerId.toString());
     try {
       await createChat(userId[0]._id, partnerId);
@@ -41,19 +47,18 @@ export const Messages = () => {
     }
   };
 
-  const partnerMessages =
-    users
-      .find((u) => u._id.toString() === curChatId)
-      ?.chats.find((c) => c.partner.toString() === userId[0]._id)?.messages ??
-    [];
+  const partnerUserChat = users
+    .find((u) => u._id.toString() === curChatId)
+    ?.chats.find((c) => c.partner.toString() === userId[0]._id);
 
-  const chat = userId[0]?.chats?.find(
+  const curUserChat = userId[0]?.chats?.find(
     (c) => c.partner.toString() === curChatId
   );
 
-  const pm = [...(chat?.messages || []), ...partnerMessages];
+  console.log(curUserChat);
 
-  console.log(pm);
+  console.log(chat);
+
   return (
     <div className="absolute bottom-0 z-50 w-96 py-4 h-auto border-[1px] border-b-[0px] bg-black rounded-tl-md rounded-tr-md  ">
       <div
@@ -93,7 +98,8 @@ export const Messages = () => {
         {openChat && (
           <ChatBox
             curUser={userId[0]._id.toString()}
-            chat={{ ...chat, messages: pm } as IChat}
+            curUserChat={userChats.length > 0 ? chat[0] : curUserChat!}
+            partnerUserChat={partnerUserChat!}
           />
         )}
 
@@ -122,7 +128,7 @@ export const Messages = () => {
       {openChat && (
         <MessageSender
           curUser={userId[0]._id.toString()}
-          chatId={chat?._id.toString()!}
+          chatId={curUserChat?._id.toString()!}
         />
       )}
     </div>
