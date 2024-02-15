@@ -8,6 +8,10 @@ import RightSideBar from "@/components/layout/RightSideBar";
 import Wrapper from "@/components/layout/Wrapper";
 import BottomBar from "@/components/layout/BottomBar";
 
+import { disableReactDevTools } from "@fvilers/disable-react-devtools";
+
+disableReactDevTools();
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,6 +24,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log = function () {};
   return (
     <html lang="en">
       <body className={inter.className}>

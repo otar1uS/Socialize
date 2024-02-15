@@ -11,7 +11,7 @@ const BottomBar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="sticky flex bottom-0  z-20 w-full bg-dark px-6 py-3 items-center justify-between md:hidden">
+    <div className="sticky flex bottom-0  z-200 w-full bg-dark px-6 py-3 items-center justify-between md:hidden">
       {sidebarLinks.map((link) => {
         return (
           <Link href={link.route} key={link.label}>

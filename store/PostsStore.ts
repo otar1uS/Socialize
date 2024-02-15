@@ -8,9 +8,6 @@ interface postState {
   post: Post;
   loading: boolean;
 
-  switcher: boolean;
-  switcherLike: boolean;
-
   allPostsFetcher: () => Promise<void>;
   postHandler: (
     url: string,
@@ -26,8 +23,7 @@ const usePostState = create<postState>((set) => ({
   posts: [],
   post: {} as Post,
   loading: false,
-  switcher: false,
-  switcherLike: false,
+
   //! async functions------
 
   //! fetching all posts
@@ -65,35 +61,59 @@ const usePostState = create<postState>((set) => ({
     });
 
     if (!response.ok) {
-      throw new Error(`something when wrong while trying to ${method} post`);
+      throw new Error(`Something went wrong while trying to ${method} post`);
     }
 
     if (method === "POST") {
-      if (url.split("/").includes("savedPosts")) {
+      const postId = url.split("/").pop();
+
+      if (url.includes("savedPosts")) {
         set((state) => {
           const updatedPosts = state.posts.map((p) => {
-            p.creator.savedPosts = p.creator.savedPosts.filter(
-              (id) => id !== p._id.toString()
-            );
+            const postIndex = p._id.toString();
+
+            if (postIndex === postId) {
+              const isAlreadySaved = p.creator.savedPosts.includes(postIndex);
+
+              if (isAlreadySaved) {
+                p.creator.savedPosts = p.creator.savedPosts.filter(
+                  (id) => id !== postIndex
+                );
+              } else {
+                p.creator.savedPosts.push(postIndex);
+              }
+            }
+
             return p;
           });
+
           return {
             ...state,
-            switcher: !state.switcher,
             posts: updatedPosts,
           };
         });
-      } else if (url.split("/").includes("likedPosts")) {
+      } else if (url.includes("likedPosts")) {
         set((state) => {
           const updatedPosts = state.posts.map((p) => {
-            p.creator.likedPosts = p.creator.likedPosts.filter(
-              (id) => id !== p._id.toString()
-            );
+            const postIndex = p._id.toString();
+
+            if (postIndex === postId) {
+              const isAlreadyLiked = p.creator.likedPosts.includes(postIndex);
+
+              if (isAlreadyLiked) {
+                p.creator.likedPosts = p.creator.likedPosts.filter(
+                  (id) => id !== postIndex
+                );
+              } else {
+                p.creator.likedPosts.push(postIndex);
+              }
+            }
+
             return p;
           });
+
           return {
             ...state,
-            switcherLike: !state.switcherLike,
             posts: updatedPosts,
           };
         });
@@ -155,9 +175,7 @@ const usePostState = create<postState>((set) => ({
 export const usePosts = () => usePostState((state) => state.posts);
 export const useDeletePost = () => usePostState((state) => state.deletePost);
 export const usePostHandler = () => usePostState((state) => state.postHandler);
-export const useSwitcher = () => usePostState((state) => state.switcher);
-export const useSwitcherLike = () =>
-  usePostState((state) => state.switcherLike);
+
 export const useAllPostsFetcher = () =>
   usePostState((state) => state.allPostsFetcher);
 export const useAddComment = () => usePostState((state) => state.addComment);

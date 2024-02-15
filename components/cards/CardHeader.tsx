@@ -4,7 +4,6 @@ import { AvatarComponent } from "./Avatar";
 
 import { BookmarkIcon, UnBookmarkIcon } from "@/lib/Utilities/IconsStore";
 import { CardHeaderComponentProps } from "@/TS/ActionTypes";
-import { useSwitcher } from "@/store/PostsStore";
 
 export const CardHeaderComponent: React.FC<CardHeaderComponentProps> = ({
   isItProfile,
@@ -12,9 +11,10 @@ export const CardHeaderComponent: React.FC<CardHeaderComponentProps> = ({
   postData,
   postHandler,
   userId,
+  isItSavedPost,
 }) => {
-  const switcher = useSwitcher();
   const savePostUrl = `/api/user/${userId}/savedPosts/${postData._id}`;
+ 
 
   return (
     <CardHeader className="flex justify-between ">
@@ -25,7 +25,7 @@ export const CardHeaderComponent: React.FC<CardHeaderComponentProps> = ({
           postData={postData}
         />
         <div className="flex gap-4 flex-col items-center">
-          {switcher ? (
+          {isItSavedPost ? (
             <BookmarkIcon
               className="max-w-7   cursor-pointer text-cyan"
               onClick={() => {

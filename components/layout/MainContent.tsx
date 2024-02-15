@@ -21,7 +21,6 @@ const MainContent = ({ children }: MainContentProps) => {
     ? currentPath.match(regex)?.[0]
     : currentPath;
 
-  // Get title of current path
   const title = pageTitles.find((page) => page.url === firstPath)?.title || "";
 
   useEffect(() => {
@@ -48,7 +47,7 @@ const MainContent = ({ children }: MainContentProps) => {
     <div className="bg-dark   flex flex-col  items-center gap-10 pt-5 flex-1 w-full max-w-3xl     border-r-2 border-l-2 border-gray">
       <div
         ref={ref}
-        className="flex  sticky top-0  w-full max-w-3xl flex-col sm:flex-row  sm:gap-20   items-start  gap-4  z-[200] bg-black   py-2 sm:py-5  justify-between  sm:items-center  px-4 md:px-8   "
+        className="flex  sticky top-0  w-full max-w-3xl flex-row  sm:gap-20   items-start  gap-4  z-[200] bg-black   py-2 sm:py-5  justify-between  sm:items-center  px-4 md:px-8   "
       >
         <SearchBar />
 
@@ -58,13 +57,6 @@ const MainContent = ({ children }: MainContentProps) => {
 
         <div className="gap-2 items-center flex xl:hidden">
           <UserButton />
-          <SignedIn>
-            <SignOutButton>
-              <div className="flex w-full cursor-pointer gap-2 items-center justify-start">
-                <LogoutIcon size={32} />
-              </div>
-            </SignOutButton>
-          </SignedIn>
         </div>
       </div>
       <div className="h-full overflow-scroll  overflow-y-hidden overflow:bg-gray mt-2  overflow-x-hidden w-full max-w-2xl px-4 md:px-8 xl:px-18 ">

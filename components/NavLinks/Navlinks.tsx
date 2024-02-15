@@ -5,6 +5,7 @@ import {
 } from "react-icons/md";
 import { IoBookmarksOutline as BookmarkIcon } from "react-icons/io5";
 import { MdFavoriteBorder as FavoriteIcon } from "react-icons/md";
+import { MessageIcon } from "@/lib/Utilities/IconsStore";
 
 const sidebarLinks = [
   {
@@ -16,6 +17,11 @@ const sidebarLinks = [
     icon: <AddPhotoIcon scale={24} />,
     route: "/create-post",
     label: "Create Post",
+  },
+  {
+    icon: <MessageIcon scale={24} />,
+    route: "/messages",
+    label: "Messages",
   },
   {
     icon: <GroupsIcon size={24} />,
@@ -42,6 +48,10 @@ const pageTitles = [
   {
     url: "/edit-profile",
     title: "Edit Profile",
+  },
+  {
+    url: "/messages",
+    title: "Messages",
   },
   {
     url: "/create-post",

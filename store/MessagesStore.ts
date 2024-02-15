@@ -1,19 +1,21 @@
-import { User } from "@/TS/ActionTypes";
+import { IChat, User } from "@/TS/ActionTypes";
 import { create } from "zustand";
 
 interface messageState {
   chats: User[];
-
+  partnerMessage: IChat[];
   createChat: (userId: string, partnerId: string) => Promise<void>;
   fetchMessages: (
     userId: string,
     partnerId: string,
     textMessage: string
   ) => Promise<void>;
+  fetchPartnerMessage: (userId: string, partnerId: string) => void;
 }
 
 const useMessageStore = create<messageState>((set) => ({
   chats: [],
+  partnerMessage: [],
 
   createChat: async (userId, partnerId) => {
     try {
@@ -53,6 +55,27 @@ const useMessageStore = create<messageState>((set) => ({
       console.log(data);
 
       set({ chats: [data] });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  fetchPartnerMessage: async (userId, partnerId) => {
+    try {
+      const response = await fetch(
+        `/api/chats/${userId}/${partnerId.toString()}/partner`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Something went wrong while fetching messages");
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      set({ partnerMessage: [data] });
     } catch (error) {
       console.error(error);
     }

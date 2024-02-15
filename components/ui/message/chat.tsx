@@ -7,15 +7,19 @@ const ChatBox = ({
   curUserChat,
   partnerUserChat,
   curUser,
+
 }: {
   curUserChat: IChat;
   partnerUserChat: IChat;
   curUser: string;
-}) => {
-  const messages = curUserChat.messages;
 
-  const curMessages = curUserChat.messages;
-  const partnerMessages = partnerUserChat.messages;
+}) => {
+  const messages = curUserChat?.messages;
+
+  const curMessages = curUserChat?.messages || [];
+  const partnerMessages = partnerUserChat?.messages || [];
+
+  console.log(curMessages, partnerMessages, "curMessages, partnerMessages");
 
   const allMessages = [...curMessages, ...partnerMessages].sort(
     (a, b) =>
@@ -23,10 +27,7 @@ const ChatBox = ({
       new Date(b.timestamp ?? 0).getTime()
   );
 
-
-
   const scroll = useRef<HTMLDivElement | null>(null);
-
 
   const scrollToBottom = useCallback(() => {
     if (scroll.current) {
@@ -41,7 +42,7 @@ const ChatBox = ({
   return (
     <div className="bg-gray-100 rounded-lg p-2 h-auto  relative">
       <div className="bg-white flex flex-col gap-1 max-w-full rounded-lg p-4 shadow-md min-h-[600px] overflow-y-scroll custom-scrollbar">
-        {curUserChat.messages.length > 0 || partnerUserChat.messages.length > 0
+        {curUserChat.messages || partnerUserChat.messages
           ? allMessages.map((mes: IMessage, i: number) => {
               return (
                 <div

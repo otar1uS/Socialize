@@ -8,7 +8,7 @@ const LikedPosts = () => {
   const posts = usePostState((state) => state.posts);
 
   return (
-    <div className="w-full h-full flex flex-col gap-6">
+    <div className="w-full min-h-screen flex flex-col gap-6">
       {posts?.map((post: Post) => {
         return <Cards key={post.caption} postData={post} />;
       })}

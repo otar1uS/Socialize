@@ -3,7 +3,7 @@ import React from "react";
 
 const CreatePost = () => {
   return (
-    <div className="h-full">
+    <div className="h-screen">
       <FormPostEditing />
     </div>
   );

@@ -30,7 +30,7 @@ const People = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-4 min-h-screen">
       {people.map((person) => (
         <UserCard key={person?.username} userData={person} />
       ))}

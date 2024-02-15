@@ -133,6 +133,7 @@ export type User = {
 export interface CardHeaderComponentProps extends CommonComponentProps {
   postHandler: (url: string, method: string) => void;
   userId: string;
+  isItSavedPost: string;
 }
 
 // AvatarComponentProps interface
@@ -205,3 +206,9 @@ export interface IUserDocument extends IUser, Document {}
 export interface IChatDocument extends IChat, Document {}
 
 export interface IMessageDocument extends IMessage, Document {}
+
+export interface data {
+  user: string;
+  partnerId: string;
+  textMessage: string;
+}

@@ -4,9 +4,22 @@ import { useUser } from "@clerk/nextjs";
 import { Messages } from "../ui/message/Messages";
 import useUserState from "@/store/UserStore";
 import UserCard from "../cards/UserCard";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import path from "path";
 
 const RightSideBar = () => {
   const { user } = useUser();
+  const [show, setShow] = useState(true);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname === "/messages") {
+      setShow(false);
+    } else {
+      setShow(true);
+    }
+  }, [pathname]);
 
   const toFollow = useUserState((state) =>
     state.Users.filter((u) => u.clerkId !== user?.id).filter(
@@ -54,7 +67,7 @@ const RightSideBar = () => {
           )}
         </div>
         <div className="relative h-full w-full hidden xl:block">
-          <Messages />
+          {show && <Messages itsPage={false} />}
         </div>
       </div>
     </div>

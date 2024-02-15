@@ -11,7 +11,6 @@ import SidebarNavigation from "../NavLinks/SidebarNavigation";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { SignOutButton, SignedIn } from "@clerk/clerk-react";
 import { LogoutIcon } from "@/lib/Utilities/IconsStore";
-import { useEffect } from "react";
 
 import { User } from "@/TS/ActionTypes";
 import { LeftSideBarSkeleton } from "../ui/skeletons";
@@ -20,17 +19,11 @@ import useUserState from "@/store/UserStore";
 const LeftSideBar = () => {
   const { user } = useUser();
 
-  const getAllUsers = useUserState((state) => state.fetchAllTheUserData);
-
   const userData = useUserState((state) =>
     state.Users.find((u: User) => u.clerkId === user?.id)
   );
 
   const isLoading = useUserState((state) => state.loading);
-
-  useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
 
   const userStats = [
     { number: userData?.posts?.length || "0", name: "Posts" },

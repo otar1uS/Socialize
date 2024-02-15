@@ -3,6 +3,8 @@ import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import { FaRegComment } from "react-icons/fa";
 import { ImBin as DeleteIcon } from "react-icons/im";
+import { BiSolidMessageSquareDots } from "react-icons/bi";
+
 import {
   SlUserFollow as FollowIcon,
   SlUserFollowing as FollowingIcon,
@@ -30,4 +32,5 @@ export {
   ArrowDownIcon,
   ArrowUpIcon,
   GetBackArrow,
+  BiSolidMessageSquareDots as MessageIcon,
 };

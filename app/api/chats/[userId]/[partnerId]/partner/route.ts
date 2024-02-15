@@ -3,7 +3,7 @@ import User from "@/lib/models/User";
 import { connectToDataBase } from "@/lib/mongoDB/mongoose";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
-export const POST = async (req: Request, { params }: Params) => {
+export const GET = async (req: Request, { params }: Params) => {
   try {
     await connectToDataBase();
 
@@ -28,16 +28,7 @@ export const POST = async (req: Request, { params }: Params) => {
       );
     }
 
-    const body = await req.json();
-
-    chat.messages.push({
-      sender: params.userId,
-      content: body?.text,
-    });
-    user.increment();
-    await user.save();
-
-    return new Response(JSON.stringify(user), { status: 200 });
+    return new Response(JSON.stringify(chat), { status: 200 });
   } catch (error) {
     console.error(error);
 

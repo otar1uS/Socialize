@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { CardHeaderComponent } from "./CardHeader";
 import CardFooterComponent from "./CardFooter";
+import { useEffect } from "react";
 
 export const Cards = ({
   postData,
@@ -24,11 +25,11 @@ export const Cards = ({
   const pathname = usePathname();
 
   const isItSavedPost = posts.map((u) =>
-    u.creator.savedPosts.find((post) => post === postData._id.toString())
+    u.creator?.savedPosts.find((post) => post === postData._id.toString())
   );
 
   const isItLikedPost = posts.map((u) =>
-    u.creator.likedPosts.find((post) => post === postData._id.toString())
+    u.creator?.likedPosts.find((post) => post === postData._id.toString())
   );
 
   if (
@@ -49,6 +50,7 @@ export const Cards = ({
         postData={postData as any}
         postHandler={postHandler}
         userId={user?.id as string}
+        isItSavedPost={isItSavedPost[0] as any}
       />
       <CardContent className="flex justify-start items-center">
         <Image
@@ -62,6 +64,7 @@ export const Cards = ({
       <CardFooterComponent
         userId={user?.id as string}
         postData={postData}
+        isItLikedPost={isItLikedPost[0] as any}
         postHandler={postHandler}
       />
     </Card>

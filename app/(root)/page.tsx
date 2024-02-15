@@ -2,8 +2,12 @@
 
 import { Post } from "@/TS/ActionTypes";
 import { Cards } from "@/components/cards/Cards";
+
 import { CardsSkeleton } from "@/components/ui/skeletons";
+
 import { useAllPostsFetcher, useLoading, usePosts } from "@/store/PostsStore";
+
+import { useUser } from "@clerk/nextjs";
 
 import { useEffect } from "react";
 

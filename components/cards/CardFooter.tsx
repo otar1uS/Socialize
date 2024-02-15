@@ -9,7 +9,7 @@ import {
 } from "@/lib/Utilities/IconsStore";
 import Link from "next/link";
 import { CardFooter } from "../shadcn-ui/card";
-import { useDeletePost, useSwitcherLike } from "@/store/PostsStore";
+import { useDeletePost } from "@/store/PostsStore";
 import Comments from "../comment/Comments";
 import { Post } from "@/TS/ActionTypes";
 
@@ -17,14 +17,16 @@ const CardFooterComponent = ({
   userId,
   postData,
   postHandler,
+  isItLikedPost,
 }: {
   userId: string;
   postData: Post;
+  isItLikedPost: string;
   postHandler: (url: string, method: string) => void;
 }) => {
   const [showComments, setShowComments] = useState(false);
   const [likeCount, setLikeCount] = useState(Number(postData.likes.length));
-  const switcherLike = useSwitcherLike();
+
   const deletePost = useDeletePost();
   const likePostUrl = `/api/user/${userId}/likedPosts/${postData?._id}`;
   const deletePostUrl = `/api/posts/${postData?._id}/${postData?.creator?._id}`;
@@ -32,7 +34,9 @@ const CardFooterComponent = ({
   const handleLikeClick = async () => {
     postHandler(likePostUrl, "POST");
 
-    setLikeCount((prevCount) => (switcherLike ? prevCount - 1 : prevCount + 1));
+    setLikeCount((prevCount) =>
+      isItLikedPost ? prevCount - 1 : prevCount + 1
+    );
   };
 
   return (
@@ -40,7 +44,7 @@ const CardFooterComponent = ({
       <p className="text-cyan font-[700] ">{postData?.tag}</p>
       <div className="flex justify-between items-start w-full">
         <div className="flex  items-center  ">
-          {switcherLike ? (
+          {isItLikedPost ? (
             <div
               className="flex  items-center  cursor-pointer text-pink-900   "
               onClick={handleLikeClick}

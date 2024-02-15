@@ -1,74 +1,67 @@
+import React, { useState, useEffect, useRef } from "react";
 import InputEmoji from "react-input-emoji";
 import { BsFillSendFill } from "react-icons/bs";
+
 import useMessageStore from "@/store/MessagesStore";
-import { useEffect, useState } from "react";
+import { socket } from "./socket";
+import { data } from "@/TS/ActionTypes";
 
-import socketIO from "socket.io-client";
-
-const socket = socketIO("http://localhost:4000", {
-  transports: ["websocket"],
-  withCredentials: true,
-});
-
-const PORT = process.env.PORT || 4000;
-
-export const MessageSender = ({
+const MessageSender = ({
   curUser,
-  chatId,
+  partnerId,
 }: {
   curUser: string;
-  chatId: string;
+  partnerId: string;
 }) => {
-  const [textMessage, setMessage] = useState<string>("");
-  const [socketReturnedData, setSocketReturnedData] = useState<any>();
-
-  console.log(PORT);
+  const [textMessage, setTextMessage] = useState("");
   const fetchMessages = useMessageStore((state) => state.fetchMessages);
-
-  console.log(socket);
+  const fetchPartnerMessage = useMessageStore(
+    (state) => state.fetchPartnerMessage
+  );
 
   useEffect(() => {
-    socketInitializer();
+    if (socket) {
+      socket.emit("register", { curUser });
+    }
+
+    const handleReceiveMessage = (data: data) => {
+      fetchPartnerMessage(data.user, data.partnerId);
+    };
+
+    socket.on("messageResponse", handleReceiveMessage);
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-      }
+      socket.off("messageResponse", handleReceiveMessage);
     };
-  }, []);
-  async function socketInitializer() {
-    try {
-      socket.on("messageResponse", (data: any) => {
-        setSocketReturnedData(data);
-      });
-    } catch (error) {
-      console.error("Socket initialization error:", error);
-    }
-  }
-  function handleKeyPress(e: KeyboardEvent) {
+  }, [curUser, partnerId, fetchPartnerMessage]);
+
+  const handleKeyPress = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      socket.emit("message", {
-        textMessage,
-      });
       sendMessage();
-      setMessage("");
     }
-    console.log("emitted");
-  }
+  };
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (textMessage.trim() !== "") {
-      fetchMessages(curUser, chatId, socketReturnedData.textMessage);
-      setMessage("");
+      try {
+        await fetchMessages(curUser, partnerId, textMessage);
+        if (socket) {
+          socket.emit("message", { curUser, partnerId, textMessage });
+        }
+      } catch (error) {
+        console.error("Error fetching messages after sending:", error);
+      }
+
+      setTextMessage("");
     }
   };
 
   return (
-    <div className="flex items-center  px-4 gap-3 chat-input flex-grow-0 z-[100] ">
+    <div className="flex items-center px-4 gap-3 chat-input flex-grow-0 z-[100]">
       <InputEmoji
         value={textMessage}
-        onChange={setMessage}
+        onChange={setTextMessage}
         onKeyDown={handleKeyPress}
         fontFamily="nunito"
         borderColor="rgba(72,112,223,0.2)"
@@ -82,3 +75,5 @@ export const MessageSender = ({
     </div>
   );
 };
+
+export default MessageSender;

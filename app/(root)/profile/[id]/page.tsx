@@ -23,8 +23,6 @@ const Profile = () => {
 
   const Users = useUserState((state) => state.Users);
 
-  // console.log(Users);
-
   const userStats = useUserState((state) =>
     state.Users.find((user: User) => user.clerkId === id)
   );
