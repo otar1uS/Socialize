@@ -7,19 +7,15 @@ const ChatBox = ({
   curUserChat,
   partnerUserChat,
   curUser,
-
 }: {
   curUserChat: IChat;
   partnerUserChat: IChat;
   curUser: string;
-
 }) => {
   const messages = curUserChat?.messages;
 
   const curMessages = curUserChat?.messages || [];
   const partnerMessages = partnerUserChat?.messages || [];
-
-  console.log(curMessages, partnerMessages, "curMessages, partnerMessages");
 
   const allMessages = [...curMessages, ...partnerMessages].sort(
     (a, b) =>

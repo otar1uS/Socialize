@@ -38,8 +38,6 @@ const SearchPost = () => {
     return null;
   }
 
-  console.log(posts);
-
   return loading ? (
     <CardsSkeleton />
   ) : (
@@ -52,9 +50,16 @@ const SearchPost = () => {
           <Link href={`/search/people/${query}`}>people</Link>
         </Button>
       </div>
-      {posts?.map((post: Post) => {
-        return <Cards key={post.__v} postData={post} />;
-      })}
+      {posts.length === 0 ? (
+        <h1 className="text-[14px] text-center text-cyan">
+          Could not be able to find any post with that title or caption please
+          use different one
+        </h1>
+      ) : (
+        posts?.map((post: Post) => {
+          return <Cards key={post.__v} postData={post} />;
+        })
+      )}
     </div>
   );
 };

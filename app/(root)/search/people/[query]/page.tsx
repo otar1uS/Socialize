@@ -40,9 +40,16 @@ const SearchPeople = () => {
         </Button>
       </div>
 
-      {searchedPeople.map((person) => (
-        <UserCard key={person._id} userData={person} />
-      ))}
+      {searchedPeople.length === 0 ? (
+        <h1 className="text-[14px] text-center text-cyan">
+          Could not be able to find any user with that name please use different
+          username
+        </h1>
+      ) : (
+        searchedPeople.map((person) => (
+          <UserCard key={person._id} userData={person} />
+        ))
+      )}
     </div>
   );
 };

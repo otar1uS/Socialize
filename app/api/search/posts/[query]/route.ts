@@ -16,7 +16,9 @@ export const GET = async (
         { tag: { $regex: query, $options: "i" } },
       ],
     })
-      .populate("posts savedPosts  likedPosts  followers  following")
+      .populate(
+        "creator likes comments.creator comments.likes comments.replies.creator"
+      )
       .exec();
     console.log(`Searched Posts: ${JSON.stringify(searchedPosts)}`);
 

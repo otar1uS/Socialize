@@ -19,6 +19,7 @@ import useUserState from "@/store/UserStore";
 const LeftSideBar = () => {
   const { user } = useUser();
 
+  const users = useUserState((state) => state.Users);
   const userData = useUserState((state) =>
     state.Users.find((u: User) => u.clerkId === user?.id)
   );
@@ -38,9 +39,11 @@ const LeftSideBar = () => {
       className="h-screen top-0 bg-dark 
      left-0 sticky  flex flex-col gap-6 px-4 py-6 max-md:hidden text-[16px]  max-xl:items-end   xl:text-xl font-medium"
     >
-      <Link href="/">
-        <Image src="/logo.png" alt="Socialize" width={150} height={150} />
-      </Link>
+      <div className="flex justify-center">
+        <Link href="/" className="">
+          <Image src="/letter-s.svg" alt="Socialize" width={50} height={50} />
+        </Link>
+      </div>
       <div className="flex flex-col gap-1 xl:gap-3">
         <div className="flex flex-col justify-center gap-3 items-center text-white">
           <Link href="/">

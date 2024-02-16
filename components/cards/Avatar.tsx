@@ -9,6 +9,8 @@ export const AvatarComponent: React.FC<AvatarComponentProps> = ({
 }) => {
   const router = useRouter();
 
+
+
   return (
     <div className="flex gap-2 items-center mb-2">
       <Avatar>
