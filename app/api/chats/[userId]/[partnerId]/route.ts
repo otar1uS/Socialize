@@ -18,7 +18,7 @@ export const POST = async (req: Request, { params }: Params) => {
       );
     }
 
-    const existingChat = user.chats.find((chat) =>
+    const existingChat = user.chats.find((chat: any) =>
       chat.partner.equals(params.partnerId)
     );
     if (existingChat) {
