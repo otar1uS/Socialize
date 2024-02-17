@@ -23,9 +23,19 @@ export const POST = async (req: Request, { params }: Params) => {
   try {
     const bytes = await post.postPhoto.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const postPhotoPath = path.join("public", "uploads", post.postPhoto.name);
+    const sanitizedFileName = post.postPhoto.name.replace(/\s+/g, "_");
+    const timestamp = new Date().getTime();
+    const uniqueFileName = `${timestamp}_${sanitizedFileName}`;
+    const uniquePostPhotoPath = path.join("public", "uploads", uniqueFileName);
 
-    await writeFile(postPhotoPath, buffer);
+    try {
+      await writeFile(uniquePostPhotoPath, buffer);
+    } catch (writeError) {
+      console.error(`Failed to write file: ${writeError}`);
+      return new Response("Failed to create post - error writing file", {
+        status: 500,
+      });
+    }
 
     const postPhotoLocation = `/uploads/${post.postPhoto.name}`;
 
