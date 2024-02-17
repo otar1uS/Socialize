@@ -26,7 +26,7 @@ export const POST = async (req: Request, { params }: Params) => {
     const sanitizedFileName = post.postPhoto.name.replace(/\s+/g, "_");
     const timestamp = new Date().getTime();
     const uniqueFileName = `${timestamp}_${sanitizedFileName}`;
-    const uniquePostPhotoPath = path.join("public", "uploads", uniqueFileName);
+    const uniquePostPhotoPath = path.join("public", uniqueFileName);
 
     try {
       await writeFile(uniquePostPhotoPath, buffer);
@@ -37,7 +37,7 @@ export const POST = async (req: Request, { params }: Params) => {
       });
     }
 
-    const postPhotoLocation = `/uploads/${post.postPhoto.name}`;
+    const postPhotoLocation = `/${post.postPhoto.name}`;
 
     await connectToDataBase();
 
