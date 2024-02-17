@@ -4,21 +4,17 @@ import { User } from "@/TS/ActionTypes";
 import Loader from "@/components/ui/Loader";
 import UserCard from "@/components/cards/UserCard";
 import { useUser } from "@clerk/nextjs";
-import React, { useEffect, useState } from "react";
+
 import useUserState from "@/store/UserStore";
 
 const People = () => {
   const { user } = useUser();
-  const getAllUsers = useUserState((state) => state.fetchAllTheUserData);
+
   const isLoading = useUserState((state) => state.loading);
 
   const people = useUserState((state) =>
     state.Users.filter((person: User) => person.clerkId !== user?.id)
   );
-
-  useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
 
   if (!people)
     return (

@@ -17,7 +17,6 @@ const Profile = () => {
   const { user } = useUser();
   const { id } = useParams();
 
-  const getAllUsers = useUserState((state) => state.fetchAllTheUserData);
   const isLoading = useUserState((state) => state.loading);
   const handleFollowing = useUserState((state) => state.handleFollowing);
 
@@ -29,10 +28,6 @@ const Profile = () => {
   const loggedInUser = useUserState((state) =>
     state.Users.find((u: User) => u.clerkId === user?.id)
   );
-
-  useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
 
   const [show, setShow] = useState<string>("Posts");
 
