@@ -23,12 +23,7 @@ export const POST = async (req: Request, { params }: Params) => {
   try {
     const bytes = await post.postPhoto.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const postPhotoPath = path.join(
-      currentWorkingDirectory,
-      "public",
-      "uploads",
-      post.postPhoto.name
-    );
+    const postPhotoPath = path.join("public", "uploads", post.postPhoto.name);
 
     await writeFile(postPhotoPath, buffer);
 
