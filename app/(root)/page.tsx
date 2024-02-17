@@ -27,7 +27,7 @@ const Home = () => {
   return loading ? (
     <CardsSkeleton />
   ) : (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 min-h-screen">
       {posts?.map((post: Post) => (
         <Cards key={post.caption} postData={post} />
       ))}
