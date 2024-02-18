@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { NextRouter } from "next/router";
+
 import { Dispatch, SetStateAction } from "react";
 
 // Common interfaces

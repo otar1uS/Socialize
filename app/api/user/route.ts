@@ -10,7 +10,9 @@ export const GET = async (req: Request) => {
       .exec();
 
     return new Response(JSON.stringify(allUsers), { status: 200 });
-  } catch (err) {
-    return new Response("Failed to get all users", { status: 500 });
+  } catch (err: any) {
+    return new Response(`Failed to get all users. Error: ${err.message}`, {
+      status: 500,
+    });
   }
 };

@@ -140,19 +140,15 @@ export const Messages = ({ itsPage }: { itsPage: boolean }) => {
 
                   <p className="text-white text-md">{u.username}</p>
                   <p className="text-indigo-200 text-sm">
-                    {getTimeOfLastMessage(u, userId[0]._id.toString()).time}
+                    {getTimeOfLastMessage(u, userId[0]._id.toString())?.time}
                   </p>
                 </div>
                 <p className="text-indigo-600 text-md  ">
                   {" "}
-                  {getTimeOfLastMessage(u, userId[0]._id.toString()).lastMessage
-                    .length > 20
-                    ? getTimeOfLastMessage(
-                        u,
-                        userId[0]._id.toString()
-                      ).lastMessage.slice(0, 20) + "..."
-                    : getTimeOfLastMessage(u, userId[0]._id.toString())
-                        .lastMessage}
+                  {getTimeOfLastMessage(
+                    u,
+                    userId[0]._id.toString()
+                  )?.lastMessage?.slice(0, 20) + "..." ?? ""}
                 </p>
               </div>
             )

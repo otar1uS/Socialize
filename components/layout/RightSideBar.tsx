@@ -6,7 +6,6 @@ import useUserState from "@/store/UserStore";
 import UserCard from "../cards/UserCard";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import path from "path";
 
 const RightSideBar = () => {
   const { user } = useUser();

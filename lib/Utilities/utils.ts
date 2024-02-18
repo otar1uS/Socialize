@@ -21,8 +21,8 @@ export function formatTime(time: any) {
 }
 
 export const getTimeOfLastMessage = (user: User, userId: string) => {
-  const time = user.chats
-    .find((chat) => chat.partner.toString() === userId)
+  const time = user?.chats
+    .find((chat) => chat?.partner.toString() === userId)
     ?.messages.sort((a, b) => {
       return (
         new Date(a?.timestamp || 0).getTime() -
@@ -30,6 +30,11 @@ export const getTimeOfLastMessage = (user: User, userId: string) => {
       );
     });
 
+  if (!time)
+    return {
+      time: undefined,
+      lastMessage: "No new messages yet",
+    };
   return {
     time: formatTime(time![time!?.length - 1]?.timestamp),
     lastMessage: time![time!?.length - 1]?.content,
