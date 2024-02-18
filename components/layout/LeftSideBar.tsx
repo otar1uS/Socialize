@@ -15,9 +15,15 @@ import { LogoutIcon } from "@/lib/Utilities/IconsStore";
 import { User } from "@/TS/ActionTypes";
 import { LeftSideBarSkeleton } from "../ui/skeletons";
 import useUserState from "@/store/UserStore";
+import { useEffect } from "react";
 
 const LeftSideBar = () => {
   const { user } = useUser();
+  const getAllUsers = useUserState((state) => state.fetchAllTheUserData);
+
+  useEffect(() => {
+    getAllUsers();
+  }, [getAllUsers]);
 
   const users = useUserState((state) => state.Users);
   const userData = useUserState((state) =>
