@@ -29,10 +29,10 @@ const useUserState = create<UserState>((set) => ({
       const data = await response.json();
 
       set({ Users: data, loading: false });
-    } catch (error) {
+    } catch (error: any) {
       set({ loading: false });
 
-      console.error(error);
+      console.error(error.message);
     }
   },
 
