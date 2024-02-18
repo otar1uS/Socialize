@@ -39,9 +39,6 @@ const usePostState = create<postState>((set) => ({
 
       const data = await response.json();
 
-      console.log(data);
-
-      console.log(response);
       set({ posts: data });
       set({ loading: false });
     } catch (error) {

@@ -121,22 +121,36 @@ const Profile = () => {
         <h1 className="text-pink-500  text-[20px] font-bold my-8">{show}</h1>
         <div className="flex flex-col gap-4">
           {show === "Followers" &&
-            userStats?.followers?.map((follower: User) => (
-              <UserCard key={follower.username} userData={follower} />
+            (userStats?.followers?.length === 0 ? (
+              <p>No followers yet.</p>
+            ) : (
+              userStats?.followers?.map((follower: User) => (
+                <UserCard key={follower.username} userData={follower} />
+              ))
             ))}
+
           {show === "Following" &&
-            userStats?.following?.map((following: User) => (
-              <UserCard key={following.username} userData={following} />
+            (userStats?.following?.length === 0 ? (
+              <p>Not following anyone yet.</p>
+            ) : (
+              userStats?.following?.map((following: User) => (
+                <UserCard key={following.username} userData={following} />
+              ))
             ))}
+
           {show !== "Followers" &&
             show !== "Following" &&
-            userStats?.posts?.map((post: any) => (
-              <Cards
-                key={post.clerkId}
-                postData={post}
-                userInfo={userStats}
-                isItProfile={true}
-              />
+            (userStats?.posts?.length === 0 ? (
+              <p>No posts yet.</p>
+            ) : (
+              userStats?.posts?.map((post: any) => (
+                <Cards
+                  key={post.clerkId}
+                  postData={post}
+                  userInfo={userStats}
+                  isItProfile={true}
+                />
+              ))
             ))}
         </div>
       </div>

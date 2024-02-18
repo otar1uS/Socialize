@@ -31,8 +31,6 @@ const useUserState = create<UserState>((set) => ({
       set({ Users: data, loading: false });
     } catch (error: any) {
       set({ loading: false });
-
-      console.error(error.message);
     }
   },
 

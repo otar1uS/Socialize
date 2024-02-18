@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { CardHeaderComponent } from "./CardHeader";
 import CardFooterComponent from "./CardFooter";
-import { useEffect } from "react";
 
 export const Cards = ({
   postData,
@@ -37,11 +36,14 @@ export const Cards = ({
     (pathname.split("/").includes("liked-posts") && !isItLikedPost[0])
   )
     return (
-      <h1 className="text-center mt-5  text-[14px]  sm:text-[16px]  xl:text-[20px] w-full text-cyan">
-        {!isItSavedPost[0] ? "No saved posts yet" : "No liked posts yet"}
-      </h1>
+      <div className="text-center mt-5">
+        <h1 className="text-[14px] sm:text-[16px] xl:text-[20px] text-cyan">
+          {pathname.split("/").includes("saved-posts")
+            ? "------------------"
+            : "------------------"}
+        </h1>
+      </div>
     );
-
   return (
     <Card className="  min-w-[340px] max-w-xl mb-2 bg-[#181A1B]">
       <CardHeaderComponent

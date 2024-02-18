@@ -52,7 +52,6 @@ const useMessageStore = create<messageState>((set) => ({
       }
 
       const data = await response.json();
-      console.log(data);
 
       set({ chats: [data] });
     } catch (error) {
@@ -73,7 +72,6 @@ const useMessageStore = create<messageState>((set) => ({
       }
 
       const data = await response.json();
-      console.log(data);
 
       set({ partnerMessage: [data] });
     } catch (error) {
