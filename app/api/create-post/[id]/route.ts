@@ -26,7 +26,12 @@ export const POST = async (req: Request, { params }: Params) => {
     const sanitizedFileName = post.postPhoto.name.replace(/\s+/g, "_");
     const timestamp = new Date().getTime();
     const uniqueFileName = `${timestamp}_${sanitizedFileName}`;
-    const uniquePostPhotoPath = path.join("public", "uploads", uniqueFileName);
+    const uniquePostPhotoPath = path.join(
+      currentWorkingDirectory,
+      "public",
+      "uploads",
+      uniqueFileName
+    );
 
     try {
       await writeFile(uniquePostPhotoPath, buffer);
