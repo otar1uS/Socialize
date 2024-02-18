@@ -26,13 +26,17 @@ export const POST = async (req: Request, { params }: Params) => {
     );
 
     if (isLiked) {
-      user.likedPosts = user.likedPosts.filter(
-        (post: PostTypes) => post?._id.toString() !== postId
+      await User.updateOne(
+        { clerkId: id },
+        { $pull: { likedPosts: post._id } }
       );
-      post.likes.pull(user._id);
+      await Post.updateOne({ _id: postId }, { $pull: { likes: user._id } });
     } else {
-      user.likedPosts.push(post);
-      post.likes.push(user._id);
+      await User.updateOne(
+        { clerkId: id },
+        { $push: { likedPosts: post._id } }
+      );
+      await Post.updateOne({ _id: postId }, { $push: { likes: user._id } });
     }
 
     await user.save();

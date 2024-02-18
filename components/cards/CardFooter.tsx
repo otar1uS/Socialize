@@ -26,17 +26,22 @@ const CardFooterComponent = ({
 }) => {
   const [showComments, setShowComments] = useState(false);
   const [likeCount, setLikeCount] = useState(Number(postData.likes.length));
+  const [isItLiked, setIsItLikedPost] = useState(isItLikedPost);
 
   const deletePost = useDeletePost();
   const likePostUrl = `/api/user/${userId}/likedPosts/${postData?._id}`;
   const deletePostUrl = `/api/posts/${postData?._id}/${postData?.creator?._id}`;
 
   const handleLikeClick = async () => {
-    postHandler(likePostUrl, "POST");
-
-    setLikeCount((prevCount) =>
-      isItLikedPost ? prevCount - 1 : prevCount + 1
-    );
+    if (isItLiked) {
+      setLikeCount((prevCount) => prevCount - 1);
+      setIsItLikedPost("");
+      postHandler(likePostUrl, "POST");
+    } else {
+      setLikeCount((prevCount) => prevCount + 1);
+      postHandler(likePostUrl, "POST");
+      setIsItLikedPost("itIs");
+    }
   };
 
   return (
@@ -44,7 +49,7 @@ const CardFooterComponent = ({
       <p className="text-cyan font-[700] ">{postData?.tag}</p>
       <div className="flex justify-between items-start w-full">
         <div className="flex  items-center  ">
-          {isItLikedPost ? (
+          {isItLiked ? (
             <div
               className="flex  items-center  cursor-pointer text-pink-900   "
               onClick={handleLikeClick}
