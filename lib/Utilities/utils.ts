@@ -12,7 +12,7 @@ export function formatTime(time: any) {
   let formattedDate;
 
   if (!date.getTime()) {
-    return null;
+    return "";
   }
 
   if (isToday(date)) {
