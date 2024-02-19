@@ -34,7 +34,7 @@ const RightSideBar = () => {
     <div className=" max-xl:hidden h-screen  flex sticky right-0 top-0 w-[400px] xl:w-[450px] gap-12  bg-dark  ">
       <div className="ml-5 flex flex-col gap-4 pt-10">
         <h1 className="text-xl font-bold">Following</h1>
-        <div className="flex gap-3 justify-start">
+        <div className="flex flex-col gap-3 justify-start">
           {!following?.length ? (
             <p className="text-indigo-200">You are not following anyone</p>
           ) : (
@@ -51,8 +51,8 @@ const RightSideBar = () => {
             ))
           )}
         </div>
-        <h1 className="text-xl font-bold">Suggest to follow</h1>
-        <div className="flex gap-3 justify-start">
+        <h1 className="text-xl  font-bold">Suggest to follow</h1>
+        <div className="flex gap-3 flex-col justify-start">
           {!toFollow.length ? (
             <p className="text-indigo-200">No users to follow at the moment </p>
           ) : (

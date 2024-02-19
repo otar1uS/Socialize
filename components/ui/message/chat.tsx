@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import moment from "moment";
 
-import { IChat, IMessage, User } from "@/TS/ActionTypes";
+import { IChat, IMessage } from "@/TS/ActionTypes";
 
 const ChatBox = ({
   curUserChat,

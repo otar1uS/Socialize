@@ -11,6 +11,10 @@ export function formatTime(time: any) {
   const date: Date = new Date(String(time));
   let formattedDate;
 
+  if (!date.getTime()) {
+    return null;
+  }
+
   if (isToday(date)) {
     formattedDate = formatDistanceToNow(date, { addSuffix: true });
   } else {
@@ -30,11 +34,10 @@ export const getTimeOfLastMessage = (user: User, userId: string) => {
       );
     });
 
-  if (!time)
-    return {
-      time: undefined,
-      lastMessage: "No new messages yet",
-    };
+  if (!time) {
+    return null;
+  }
+
   return {
     time: formatTime(time![time!?.length - 1]?.timestamp),
     lastMessage: time![time!?.length - 1]?.content,
