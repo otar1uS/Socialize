@@ -11,22 +11,18 @@ export function formatTime(time: any) {
   const date: Date = new Date(String(time));
   let formattedDate;
 
-  if (!date.getTime()) {
-    return "";
-  }
-
   if (isToday(date)) {
     formattedDate = formatDistanceToNow(date, { addSuffix: true });
   } else {
-    formattedDate = formatDistanceToNow(date, { addSuffix: true });
+    formattedDate = "";
   }
 
   return formattedDate;
 }
 
 export const getTimeOfLastMessage = (user: User, userId: string) => {
-  const time = user?.chats
-    .find((chat) => chat?.partner.toString() === userId)
+  const time = user.chats
+    .find((chat) => chat.partner.toString() === userId)
     ?.messages.sort((a, b) => {
       return (
         new Date(a?.timestamp || 0).getTime() -
@@ -34,12 +30,17 @@ export const getTimeOfLastMessage = (user: User, userId: string) => {
       );
     });
 
-  if (!time) {
-    return null;
+  if (!time || time.length === 0) {
+    return {
+      time: "",
+      lastMessage: "",
+    };
   }
 
+  const lastMessage = time[time.length - 1];
+
   return {
-    time: formatTime(time![time!?.length - 1]?.timestamp),
-    lastMessage: time![time!?.length - 1]?.content,
+    time: formatTime(lastMessage.timestamp || ""),
+    lastMessage: lastMessage.content || "",
   };
 };

@@ -31,6 +31,8 @@ export const Cards = ({
     u.creator?.likedPosts.find((post) => post === postData._id.toString())
   );
 
+  console.log(isItLikedPost);
+
   if (
     (pathname.split("/").includes("saved-posts") && !isItSavedPost[0]) ||
     (pathname.split("/").includes("liked-posts") && !isItLikedPost[0])

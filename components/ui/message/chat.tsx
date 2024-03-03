@@ -38,7 +38,7 @@ const ChatBox = ({
   return (
     <div className="bg-gray-100 rounded-lg p-2 h-auto  relative">
       <div className="bg-white flex flex-col gap-1 max-w-full rounded-lg p-4 shadow-md min-h-[600px] overflow-y-scroll custom-scrollbar">
-        {curUserChat.messages || partnerUserChat.messages
+        {curUserChat?.messages || partnerUserChat?.messages
           ? allMessages.map((mes: IMessage, i: number) => {
               return (
                 <div
